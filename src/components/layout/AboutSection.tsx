@@ -7,7 +7,7 @@ const AboutSection = ({className}:SectionProps) => {
       <div className='grid grid-cols-2'>
         <div className="bg-[url('/assets/about.jpg')] bg-center bg-no-repeat bg-cover"></div>
         <div className="p-24">
-          <h1 className="mb-4">Welcome to <span className=" text-primary">Slice Savvy</span></h1>
+          <h1 className="mb-4">Welcome to <span className=" text-primary">Moga Meat Bar & Grill</span></h1>
           <div className='text-gray-300'>
             <p className='mb-4'>
               At Slice Savvy, our story is a delightful journey of passion and flavor.

@@ -10,9 +10,9 @@ import Chatboot from "@/components/layout/Chatboot";
 
 
 export const metadata: Metadata = {
-  title: "Slice Savvy: Order Delicious Pizzas Online",
-  description:
-    "Welcome to PizzaFiesta, where every order is a celebration of flavors!",
+  title: "Moga Meat Bar & Grill",
+  // description:
+  //   "Welcome to PizzaFiesta, where every order is a celebration of flavors!",
 };
 
 export default function RootLayout({
