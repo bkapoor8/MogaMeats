@@ -9,11 +9,10 @@ import Link from "next/link"
 const Footer = () => {
   return (
     <footer className="bg-gray-950 pt-12">
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-6 px-10 lg:px-48">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-6 px-10 lg:px-20">
         <div className="col-span-full lg:col-span-1 lg:block">
-          <Link href="/" className='text-primary text-2xl font-josefin'>Slice Savvy</Link>
+          <Link href="/" className='text-primary text-2xl font-josefin'>Moga Meat Bar & Grill</Link>
           <div className="mt-6 flex gap-6">
-            <TwitterIcon className={"w-6"} />
             <FaceBookIcon className={"w-6"} />
             <InstaIcon className={"w-6"}/>
           </div>
@@ -22,23 +21,32 @@ const Footer = () => {
         <div>
           <h4 className="uppercase">About Us</h4>
           <p className="mt-6 text-gray-400">
-          Passionate about delivering unforgettable pizza experiences with every savory slice we create.</p>
+          At Moga Meat Bar and Grill, we don’t just serve food—we share
+           a piece of India’s rich culinary heritage. Come and experience
+           the difference today!
+         </p>
         </div>
 
         <div>
           <h4 className="uppercase">Opening Hours</h4>
           <p className="mt-6 text-gray-400">
-            Monday - Friday</p>
-          <p className="mt-2 text-gray-400">8:00am - 9:00pm</p>
+           Sunday- Thursday</p>
+          <p className="mt-2 text-gray-400">11am-12am</p>
+
+          <p className="mt-6 text-gray-400">
+           Friday- Saturday</p>
+          <p className="mt-2 text-gray-400">11am-2am</p>
+
+          
         </div>
 
         <div>
           <h4 className="uppercase">Services</h4>
           <div className="mt-6 grid space-y-2 text-gray-400">
             <p><a className="inline-flex gap-x-2 hover:text-gray-200" href="/">Dine-In</a></p>
-            <p><a className="inline-flex gap-x-2 hover:text-gray-200" href="/">Online Ordering</a></p>
-            <p><a className="inline-flex gap-x-2 hover:text-gray-200" href="/">Catering</a></p>
-            <p><a className="inline-flex gap-x-2 hover:text-gray-200" href="/">Specialty Pizzas</a></p>
+            <p><a className="inline-flex gap-x-2 hover:text-gray-200" href="/">Take Out</a></p>
+            <p><a className="inline-flex gap-x-2 hover:text-gray-200" href="/">Catering Services</a></p>
+            <p><a className="inline-flex gap-x-2 hover:text-gray-200" href="/">Quick  Delivery</a></p>
           </div>
         </div>
 
@@ -48,15 +56,15 @@ const Footer = () => {
             <ul className="space-y-2">
               <li className="inline-flex space-x-4">
                 <span><LocationIcon className={"w-6"} /></span>
-                <span>Mirpur-13 Dhaka,Bangladesh</span>
+                <span>1560 Dundas St. London Ontario</span>
               </li>
               <li className="inline-flex space-x-4">
                 <span><PhoneIcon className={"w-6"} /></span>
-                <span>01967519057</span>
+                <span>+1 (519) 453-8888</span>
               </li>
               <li className="inline-flex space-x-4">
                 <span><MailIcon className={"w-6"} /></span>
-                <span>info@pizzafiesta.com</span>
+                <span> londonmogameat@gmail.com</span>
               </li>
             </ul>
           </div>

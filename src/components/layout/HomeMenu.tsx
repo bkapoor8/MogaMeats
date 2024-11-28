@@ -17,8 +17,8 @@ const HomeMenu = ({ className }: SectionProps) => {
   return (
     <section className={className}>
       <SectionHeader
-        header={'Hot Pizza Meals'}
-        description={'From classic favorites to innovative creations, our hot pizza meals promise a delightful symphony of flavors that will leave you craving for more.'}
+        header={'Hot Meals'}
+        description={'From classic favorites to innovative creations, our hot meals promise a delightful symphony of flavors that will leave you craving for more.'}
       />
       <div className='grid md:grid-cols-3 md:gap-0 grid-cols-1 gap-4'>
         {menuItems && menuItems.map((menuItem, index) => (
