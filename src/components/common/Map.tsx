@@ -4,11 +4,11 @@ import Loader from "./Loader";
 
 const Map = () => {
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+    googleMapsApiKey: "AIzaSyCCGghgOEG3d9HAF1UXIj5P9PBeQ_gvxls",
   });
 
    // Mirpur-13, Dhaka, Bangladesh coordinates
-   const center = { lat: 23.8060, lng: 90.3688 };
+   const center = { lat: 43.0001985, lng: -81.1957623 };
  
 
   if (!isLoaded) return <Loader className={"h-full"}/>
