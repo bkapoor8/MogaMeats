@@ -11,12 +11,9 @@ const ContactUsForm = () => {
     return email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
   };
 
-  const EMAILJS_PUBLIC_KEY = process.env
-    .NEXT_PUBLIC_EMAILJS_PUBLIC_KEY as string;
-  const EMAILJS_TEMPLATE_ID = process.env
-    .NEXT_PUBLIC_EMAILJS_TEMPLATE_ID as string;
-  const EMAILJS_SERVICE_ID = process.env
-    .NEXT_PUBLIC_EMAILJS_SERVICE_ID as string;
+  const EMAILJS_PUBLIC_KEY = "owTeSv-9FpYkamJkJ";
+  const EMAILJS_TEMPLATE_ID = "template_v5lrs2y";
+  const EMAILJS_SERVICE_ID ="service_h3erz5r" ;
 
 
     console.log(EMAILJS_TEMPLATE_ID)
