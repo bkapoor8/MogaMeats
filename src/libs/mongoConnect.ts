@@ -1,9 +1,9 @@
 // This approach is taken from https://github.com/vercel/next.js/tree/canary/examples/with-mongodb
 import { MongoClient } from "mongodb"
 
-// if (!process.env.MONGODB_URI) {
-//   throw new Error('Invalid/Missing environment variable: mongodb+srv://ankurmishraapidots:3FRu4nOGAKUbGIvR@akmishra.mhcig.mongodb.net/?')
-// }
+if (!process.env.MONGODB_URI) {
+  throw new Error('Invalid/Missing environment variable: mongodb+srv://ankurmishraapidots:3FRu4nOGAKUbGIvR@akmishra.mhcig.mongodb.net/?')
+}
 
 const uri = "mongodb://siteAdmin:admin123Db@52.200.4.201:27017/mogameat?authSource=admin";
 const options = {}
