@@ -9,7 +9,7 @@ import MenuItemAddOn from "@/types/MenuItemAddOn";
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req: NextRequest) {
-  mongoose.connect(process.env.MONGODB_URI!)
+  mongoose.connect("mongodb://siteAdmin:admin123Db@52.200.4.201:27017/mogameat?authSource=admin")
   const authSession = await getServerSession(authOptions);
   const userEmail = authSession?.user?.email;
   const { cartProducts, address } = await req.json();

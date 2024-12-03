@@ -6,7 +6,7 @@ import { Order } from "@/app/models/Order";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  mongoose.connect(process.env.MONGODB_URI!);
+  mongoose.connect("mongodb://siteAdmin:admin123Db@52.200.4.201:27017/mogameat?authSource=admin");
 
   const session = await getServerSession(authOptions);
   const userEmail = session?.user?.email;

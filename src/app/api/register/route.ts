@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    mongoose.connect(process.env.MONGODB_URI!);
+    mongoose.connect("mongodb://siteAdmin:admin123Db@52.200.4.201:27017/mogameat?authSource=admin");
     const createdUser = await User.create(body);
     return NextResponse.json(createdUser);
   } catch (err: any) {

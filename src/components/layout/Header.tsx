@@ -31,6 +31,7 @@ const Header = () => {
   const { cartProducts } = useContext(CartContext);
   const pathname = usePathname();
   const { data: profileData } = useProfile();
+  console.log("profileData" ,profileData)
 
   return (
     <Navbar

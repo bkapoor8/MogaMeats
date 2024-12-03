@@ -33,7 +33,7 @@ export const authOptions = {
         const email = credentials!.email;
         const password = credentials!.password;
 
-        mongoose.connect(process.env.MONGODB_URI!)
+        mongoose.connect("mongodb://siteAdmin:admin123Db@52.200.4.201:27017/mogameat?authSource=admin")
         const user = await User.findOne({ email });
         const passwordOk = user && bcrypt.compareSync(password, user.password)
 
@@ -63,6 +63,7 @@ export const authOptions = {
     async signIn({ user, account }: any) {
       // Manually create session for credentials login user
       if (account.provider === "credentials") {
+        console.log("user" , user)
         if (user && "id" in user && adapter?.createSession) {
           const sessionToken = randomUUID();
           const sessionExpiry = new Date(Date.now() + session.maxAge * 1000);

@@ -5,7 +5,7 @@ import { isAdmin } from "../auth/[...nextauth]/route";
 
 export async function POST(req: NextRequest) {
   try {
-    mongoose.connect(process.env.MONGODB_URI!);
+    mongoose.connect("mongodb://siteAdmin:admin123Db@52.200.4.201:27017/mogameat?authSource=admin");
     if (await isAdmin()) {
       const data = await req.json();
       const menuItem = await MenuItem.create(data);
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   try {
-    mongoose.connect(process.env.MONGODB_URI!);
+    mongoose.connect("mongodb://siteAdmin:admin123Db@52.200.4.201:27017/mogameat?authSource=admin");
     if (await isAdmin()) {
       const { _id, ...data } = await req.json();
       const updatedMenuItem = await MenuItem.findByIdAndUpdate({ _id }, data, { new: true });
@@ -32,14 +32,14 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function GET() {
-  mongoose.connect(process.env.MONGODB_URI!);
+  mongoose.connect("mongodb://siteAdmin:admin123Db@52.200.4.201:27017/mogameat?authSource=admin");
   const menuItems = await MenuItem.find();
   return NextResponse.json(menuItems);
 }
 
 export async function DELETE(req: NextRequest) {
   try {
-    mongoose.connect(process.env.MONGODB_URI!);
+    mongoose.connect("mongodb://siteAdmin:admin123Db@52.200.4.201:27017/mogameat?authSource=admin");
     if (await isAdmin()) {
       const url = new URL(req.url);
       const _id = url.searchParams.get('_id');
