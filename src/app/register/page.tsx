@@ -22,17 +22,38 @@ const RegisterPage = () => {
     event.preventDefault();
     setCreatingUser(true);
     setError('');
-    const response = await fetch(`/api/register`, {
-      method: 'POST',
-      body: JSON.stringify({ name, email, password }),
-      headers: { 'Content-Type': 'application/json' }
-    }).then(res => res.json());
-    if (response.error) {
-      setError(response.message);
-    } else {
-      setUserCreated(true);
+  
+    try {
+      const response = await fetch(`/api/register`, {
+        method: 'POST',
+        body: JSON.stringify({ name, email, password }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+  
+      // Check if the response is OK and not empty
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const responseText = await response.text(); // Read the response as text
+  
+      if (!responseText) {
+        throw new Error('Empty response from server');
+      }
+  
+      const parsedResponse = JSON.parse(responseText); // Parse the text to JSON
+  
+      if (parsedResponse.error) {
+        setError(parsedResponse.message);
+      } else {
+        setUserCreated(true);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setError('An error occurred. Please try again later.');
+    } finally {
+      setCreatingUser(false);
     }
-    setCreatingUser(false);
   }
 
   return (
