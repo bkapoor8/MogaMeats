@@ -5,7 +5,7 @@ import { MongoClient } from "mongodb"
 //   throw new Error('Invalid/Missing environment variable: mongodb+srv://ankurmishraapidots:3FRu4nOGAKUbGIvR@akmishra.mhcig.mongodb.net/?')
 // }
 
-const uri = "mongodb://siteAdmin:admin123Db@ip:52.200.4.201/mogameat?authSource=admin";
+const uri = "mongodb://siteAdmin:admin123Db@52.200.4.201:27017/mogameat?authSource=admin";
 const options = {}
 
 let client
