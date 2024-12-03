@@ -10,9 +10,15 @@ const HomeMenu = ({ className }: SectionProps) => {
 
   useEffect(() => {
     fetch("/api/menu-items")
-      .then(res => res.json())
-      .then(menuItems => setMenuItems(menuItems.slice(0,6)))
-  }, [])
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return res.json();
+      })
+      .then(menuItems => setMenuItems(menuItems.slice(0, 6)))
+      .catch(error => console.error('There was a problem with the fetch operation:', error));
+  }, []);
 
   return (
     <section className={className}>
