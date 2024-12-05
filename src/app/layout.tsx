@@ -33,7 +33,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="font-poppins bg-[url('/assets/bg_dark.jpg')] bg-repeat bg-fixed">
+      <body className="font-poppins bg-[url('/assets/bg_dark.jpg')] bg-repeat bg-fixed justify-center">
         <UIProvider>
           <main>
             <AppContextProvider>

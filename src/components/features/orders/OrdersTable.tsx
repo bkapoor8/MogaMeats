@@ -1,4 +1,4 @@
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Tooltip, Chip } from "@nextui-org/react"
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Tooltip, Chip } from "@nextui-org/react";
 import Link from "next/link";
 import Order from "@/types/Order";
 import { EyeFilledIcon } from "@/icons/EyeFilledIcon";
@@ -11,11 +11,18 @@ interface OrdersTableProps {
 
 const OrdersTable = ({ orders, isAdmin }: OrdersTableProps) => {
   return (
-    <Table aria-label="Orders Table" isStriped
+    <Table
+      aria-label="Orders Table"
+      isStriped
       topContent={'Total Orders: ' + orders.length}
-      classNames={{ th: "text-md text-center", td: "text-md text-center text-gray-300", table: 'gap-4' }}>
+      classNames={{
+        th: "text-md text-center",
+        td: "text-md text-center text-gray-300",
+        table: 'gap-4 w-full',
+      }}
+    >
       <TableHeader>
-      <TableColumn>Order Date</TableColumn>
+        <TableColumn>Order Date</TableColumn>
         <TableColumn>Order Number</TableColumn>
         <TableColumn className={isAdmin ? "" : "hidden"}>Customer Email</TableColumn>
         <TableColumn>Item Name</TableColumn>
@@ -26,7 +33,9 @@ const OrdersTable = ({ orders, isAdmin }: OrdersTableProps) => {
         <TableBody>
           {orders.map((order) => (
             <TableRow key={order._id}>
-              <TableCell><p className="whitespace-nowrap">{getReadableDateTime(order.createdAt)}</p></TableCell>
+              <TableCell>
+                <p className="whitespace-nowrap">{getReadableDateTime(order.createdAt)}</p>
+              </TableCell>
               <TableCell>{order._id}</TableCell>
               <TableCell className={isAdmin ? "" : "hidden"}>{order.userEmail}</TableCell>
               <TableCell className="text-sm">
@@ -64,4 +73,4 @@ const OrdersTable = ({ orders, isAdmin }: OrdersTableProps) => {
   )
 }
 
-export default OrdersTable
+export default OrdersTable;

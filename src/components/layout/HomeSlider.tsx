@@ -12,8 +12,8 @@ const HomeSlider = ({ className }: SectionProps) => {
             {/* First Slide */}
             <SlideBackground bgImage='/assets/slider_bg_1.jpg'>
               <div className="w-full flex flex-col justify-center text-center h-full absolute z-10">
-                <span className="font-nothingYouCouldDo text-primary text-[40px] mb-4">Welcome</span>
-                <h1 className="mb-8 text-[40px]">From India straight to your <span className='block'>door steps</span></h1>
+                <span className="font-nothingYouCouldDo text-primary text-[32px] sm:text-[36px] md:text-[40px] mb-4">Welcome</span>
+                <h1 className="mb-8 text-[28px] sm:text-[32px] md:text-[36px] lg:text-[40px]">From India straight to your <span className='block'>door steps</span></h1>
                 <p>
                   <Button as={Link} href='/menu' color='primary' radius='none' size='lg' className='py-4 px-6 text-dark'>Order Now</Button>
                   <Button as={Link} href='/menu' radius='none' size='lg' className='bg-transparent border-2 py-4 px-6 ml-2'>View Menu</Button>
@@ -28,8 +28,8 @@ const HomeSlider = ({ className }: SectionProps) => {
                   {/* <Image src="/assets/slider_pizza_1.png" alt=""/> */}
                 </div>
                 <div className='max-w-xl ml-6'>
-                  <span className="font-nothingYouCouldDo text-primary text-[40px] mb-4">Crunchy</span>
-                  <h1 className="mb-8 text-[40px]"> Spicing up London one dish at a time!</h1>
+                  <span className="font-nothingYouCouldDo text-primary text-[32px] sm:text-[36px] md:text-[40px] mb-4">Crunchy</span>
+                  <h1 className="mb-8 text-[28px] sm:text-[32px] md:text-[36px] lg:text-[40px]"> Spicing up London one dish at a time!</h1>
                   <p>
                     <Button as={Link} href='/menu' color='primary' radius='none' size='lg' className='py-4 px-6 text-dark'>Order Now</Button>
                     <Button as={Link} href='/menu' radius='none' size='lg' className='bg-transparent border-2 py-4 px-6 ml-2'>View Menu</Button>
@@ -38,23 +38,6 @@ const HomeSlider = ({ className }: SectionProps) => {
               </div>
             </SlideBackground>
 
-            {/* Third Slide (Commented out) */}
-            {/* <SlideBackground bgImage='/assets/slider_bg_2.jpg'>
-              <div className="w-full flex flex-row gap-6 justify-center items-center h-full absolute z-10">
-                <div className='max-w-xl text-end mr-6'>
-                  <span className="font-nothingYouCouldDo text-primary text-[40px] mb-4">Delicious</span>
-                  <h1 className="mb-8 text-[40px]">Italian Cuizine</h1>
-                  <h3 className="mb-16">A small river named Duden flows by their place and supplies it with the necessary regelialia.</h3>
-                  <p>
-                    <Button as={Link} href='/menu' color='primary' radius='none' size='lg' className='py-4 px-6 text-dark'>Order Now</Button>
-                    <Button as={Link} href='/menu' radius='none' size='lg' className='bg-transparent border-2 py-4 px-6 ml-2'>View Menu</Button>
-                  </p>
-                </div>
-                <div className='w-1/4'>
-                  <Image src="/assets/slider_pizza_2.png" alt=""/>
-                </div>
-              </div>
-            </SlideBackground> */}
           </div>
         </div>
 

@@ -33,8 +33,8 @@ const ProfileForm = ({ user, onSave }: ProfileFormProps) => {
   }
 
   return (
-    <div className="grid grid-cols-6 gap-4">
-      <div className="col-span-2">
+    <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+      <div className="col-span-1 md:col-span-2 flex justify-center">
         <ImageUploader setImageLink={setUserImage}>
           <div className="relative">
             {userImage ? (
@@ -48,8 +48,9 @@ const ProfileForm = ({ user, onSave }: ProfileFormProps) => {
           </div>
         </ImageUploader>
       </div>
+
       <form
-        className="col-span-4"
+        className="col-span-1 md:col-span-4 flex flex-col"
         onSubmit={(e) =>
           onSave(e, {
             name: userName,
@@ -65,21 +66,21 @@ const ProfileForm = ({ user, onSave }: ProfileFormProps) => {
           })
         }
       >
-        <label> Full name</label>
+        <label>Full name</label>
         <input
           type="text"
           placeholder="Full name"
           value={userName ?? ""}
           onChange={(e) => setUserName(e.target.value)}
-          className="input"
+          className="input mb-4"
         />
-        <label> Email</label>
+        <label>Email</label>
         <input
           type="email"
           placeholder="Email"
           value={user?.email ?? ""}
           disabled
-          className="input"
+          className="input mb-4"
         />
         <AddressInputs
           addressProps={{
@@ -109,7 +110,7 @@ const ProfileForm = ({ user, onSave }: ProfileFormProps) => {
         )}
         <Button
           type="submit"
-          className="mt-2 font-semibold hover:text-white"
+          className="mt-4 font-semibold hover:text-white"
           fullWidth
         >
           Save All Changes

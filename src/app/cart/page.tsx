@@ -67,7 +67,7 @@ const CartPage = () => {
     return (
       <section className='max-w-2xl mx-auto my-16'>
         <div className='my-4 flex flex-col gap-4 items-center'>
-          <p className='text-3xl font-semibold'>Your Shopping Cart is Empty</p>
+          <p className='text-3xl font-semibold items-center'>Your Shopping Cart is Empty</p>
           <Link href={'/menu'} className='text-primary font-semibold'>
             <span>Continue shopping</span>
           </Link>

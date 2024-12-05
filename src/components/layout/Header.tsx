@@ -16,7 +16,12 @@ import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useContext } from "react";
 import { ChevronDownIcon } from "@/icons/ChevronDownIcon";
+import { UserIcon } from "@/icons/UserIcon";
+import { TagIcon } from "@/icons/TagIcon";
+import { UsersIcon } from "@/icons/UsersIcon";
+import { ShoppingBagIcon } from "@/icons/ShoppingBagIcon";
 import { MenuIcon } from "@/icons/MenuIcon";
+import { SignOutIcon } from "@/icons/SignOutIcon";
 import { usePathname } from "next/navigation";
 import { CartContext } from "../../util/ContextProvider";
 import { useProfile } from "../hooks/useProfile";
@@ -28,23 +33,22 @@ const Header = () => {
   const { data: profileData } = useProfile();
 
   return (
-    <Navbar className="font-semibold bg-dark py-3 px-4 lg:px-8">
+    <Navbar className="font-semibold bg-dark py-3 lg:px-8">
       <NavbarBrand>
         <Link href="/" className="text-primary text-xl lg:text-2xl font-josefin">
           Moga Meat Bar & Grill
         </Link>
       </NavbarBrand>
 
-      {/* Mobile View */}
-      <NavbarContent className="lg:hidden" justify="end">
+      {/* Mobile Menu Icon */}
+      <NavbarContent className="lg:hidden" justify="start">
         <Dropdown>
           <DropdownTrigger>
             <Button isIconOnly className="bg-transparent">
               <MenuIcon className="w-6 stroke-white" />
             </Button>
           </DropdownTrigger>
-          <DropdownMenu color="primary" aria-label="Mobile Navigation Menu">
-            {/* Navigation Items */}
+          <DropdownMenu color="primary" aria-label="Navigation Menu">
             <DropdownItem key="home" href="/">
               Home
             </DropdownItem>
@@ -60,38 +64,11 @@ const Header = () => {
             <DropdownItem key="contact" href="/contact">
               Contact
             </DropdownItem>
-
-            {/* Conditional Auth Options */}
-            {session ? (
-              <>
-                <DropdownItem key="profile" href="/profile">
-                  My Profile
-                </DropdownItem>
-                <DropdownItem key="orders" href="/orders">
-                  Orders
-                </DropdownItem>
-                <DropdownItem
-                  key="signOut"
-                  onClick={() => signOut({ callbackUrl: "/" })}
-                >
-                  Sign Out
-                </DropdownItem>
-              </>
-            ) : (
-              <>
-                <DropdownItem key="login" href="/login">
-                  Login
-                </DropdownItem>
-                <DropdownItem key="signup" href="/register">
-                  Sign Up
-                </DropdownItem>
-              </>
-            )}
           </DropdownMenu>
         </Dropdown>
       </NavbarContent>
 
-      {/* Desktop View */}
+      {/* Desktop Navigation */}
       <NavbarContent className="hidden lg:flex gap-8" justify="center">
         <NavbarItem isActive={pathname === "/"}>
           <Link href="/" aria-current="page" className="hover:text-primary">
@@ -120,14 +97,13 @@ const Header = () => {
         </NavbarItem>
       </NavbarContent>
 
-      {/* User Section */}
       <NavbarContent justify="end">
-        {session ? (
-          <div className="flex items-center">
-            <Dropdown>
+        {profileData ? (
+          <div className="flex items-center ">
+            <Dropdown className="text-gray-300">
               <DropdownTrigger>
                 <Button
-                  className="bg-transparent"
+                  className="bg-transparent h-full"
                   startContent={
                     <Avatar
                       src={profileData?.image || ""}
@@ -136,51 +112,116 @@ const Header = () => {
                       size="sm"
                     />
                   }
-                  endContent={<ChevronDownIcon className="w-4 stroke-white" />}
+                  endContent={
+                    <ChevronDownIcon className="w-4 stroke-white" />
+                  }
+                  disableAnimation
                 />
               </DropdownTrigger>
-              <DropdownMenu color="primary" aria-label="User Menu">
-                <DropdownItem key="profile" href="/profile">
+              <DropdownMenu aria-label="User Menu" color="primary">
+                <DropdownItem
+                  key="profile"
+                  href="/profile"
+                  startContent={<UserIcon className="w-6" />}
+                >
                   My Profile
                 </DropdownItem>
-                <DropdownItem key="orders" href="/orders">
+                <DropdownItem
+                  key="orders"
+                  href="/orders"
+                  startContent={<ShoppingBagIcon className="w-6" />}
+                >
                   Orders
                 </DropdownItem>
                 <DropdownItem
+                  className={profileData.isAdmin ? "" : "hidden"}
+                  key="categories"
+                  href="/categories"
+                  startContent={<TagIcon className="w-6" />}
+                >
+                  Categories
+                </DropdownItem>
+                <DropdownItem
+                  className={profileData.isAdmin ? "" : "hidden"}
+                  key="menu-items"
+                  href="/menu-items"
+                  startContent={<MenuIcon className="w-6" />}
+                >
+                  Menu Items
+                </DropdownItem>
+                <DropdownItem
+                  className={profileData.isAdmin ? "" : "hidden"}
+                  key="users"
+                  href="/users"
+                  startContent={<UsersIcon className="w-6" />}
+                >
+                  Users
+                </DropdownItem>
+
+                <DropdownItem
+                  className={profileData.isAdmin ? "" : "hidden"}
+                  key="carts"
+                  href="/cart"
+                  startContent={<UsersIcon className="w-6" />}
+                >
+                  Carts  {cartProducts.length > 0 && (
+                <span className="w-4 h-4 rounded-full bg-primary text-dark text-xs absolute right-1 top-0">
+                  {cartProducts.length}
+                </span>
+                  )}
+                </DropdownItem>
+                
+                <DropdownItem
                   key="signOut"
+                  startContent={<SignOutIcon className="w-6" />}
                   onClick={() => signOut({ callbackUrl: "/" })}
                 >
                   Sign Out
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
-            <Button
-              as={Link}
-              href="/cart"
-              className="bg-transparent relative min-w-10"
-              startContent={<CartIcon className="w-8 stroke-white" />}
-            >
-              {cartProducts.length > 0 && (
-                <span className="absolute w-4 h-4 rounded-full bg-primary text-dark text-xs top-0 right-1">
-                  {cartProducts.length}
-                </span>
-              )}
-            </Button>
           </div>
         ) : (
-          <div className="hidden lg:flex gap-6 items-center">
-            <Link href="/login" className="hover:text-primary">
-              Login
-            </Link>
-            <Button
-              as={Link}
-              color="primary"
-              href="/register"
-              className="font-semibold rounded-full px-6 py-2 text-dark"
-            >
-              Sign Up
-            </Button>
+          <>
+          <div className="flex items-center ">
+            <Dropdown className="text-gray-300">
+              <DropdownTrigger>
+                {/* <Button
+                  className="bg-transparent h-full"
+                
+                  // startContent={
+                  //   <Avatar
+                  //     src={""}
+                  //     isBordered
+                  //     color="primary"
+                  //     size="sm"
+                  //   />
+                  // }
+                  endContent={
+                    <ChevronDownIcon className="w-4 stroke-white" />
+                  }
+              
+                  disableAnimation
+                /> */}
+                <p  className="text-primary">Get Started</p>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="User Menu" color="primary">
+                <DropdownItem
+                  key="login"
+                  href="/login"
+                >
+                  Login
+                </DropdownItem>
+                <DropdownItem
+                  key="register"
+                  href="/register"
+                >
+                  SignUp
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
           </div>
+          </>
         )}
       </NavbarContent>
     </Navbar>
@@ -188,3 +229,4 @@ const Header = () => {
 };
 
 export default Header;
+
