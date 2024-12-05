@@ -41,7 +41,7 @@ const LoginPage = () => {
         dont&apos;t have an account? {' '}
           <Link href={"/register"} isDisabled={loginInProgress}>Sign Up</Link>
         </div>
-        <div className="my-3 text-center grid grid-cols-3 items-center">
+        {/* <div className="my-3 text-center grid grid-cols-3 items-center">
           <Divider />
           OR
           <Divider />
@@ -53,7 +53,7 @@ const LoginPage = () => {
           className="font-semibold text-dark bg-white border border-dark"
           startContent={<GoogleIcon className={"w-6"} />}>
           Login with Google
-        </Button>
+        </Button> */}
       </form>
     </section>
   )

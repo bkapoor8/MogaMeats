@@ -71,7 +71,7 @@ const RegisterPage = () => {
           Already have an account? {' '}
           <Link href={"/login"} isDisabled={creatingUser}>Login</Link>
         </div>
-        <div className="my-3 text-center grid grid-cols-3 items-center">
+        {/* <div className="my-3 text-center grid grid-cols-3 items-center">
           <Divider />
           OR
           <Divider />
@@ -83,7 +83,7 @@ const RegisterPage = () => {
           className="font-semibold text-dark bg-white border border-dark"
           startContent={<GoogleIcon className={"w-6"} />}>
           Login with Google
-        </Button>
+        </Button> */}
       </form>
       <ModalContainer
         isOpen={userCreated}

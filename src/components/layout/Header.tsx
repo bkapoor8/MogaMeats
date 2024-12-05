@@ -186,24 +186,19 @@ const Header = () => {
           <div className="flex items-center ">
             <Dropdown className="text-gray-300">
               <DropdownTrigger>
-                {/* <Button
+                <Button
                   className="bg-transparent h-full"
                 
-                  // startContent={
-                  //   <Avatar
-                  //     src={""}
-                  //     isBordered
-                  //     color="primary"
-                  //     size="sm"
-                  //   />
-                  // }
+                  startContent={
+                    <UsersIcon className="w-6" />
+                  }
                   endContent={
                     <ChevronDownIcon className="w-4 stroke-white" />
                   }
               
                   disableAnimation
-                /> */}
-                <p  className="text-primary">Get Started</p>
+                />
+               
               </DropdownTrigger>
               <DropdownMenu aria-label="User Menu" color="primary">
                 <DropdownItem
