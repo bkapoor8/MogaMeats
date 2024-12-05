@@ -26,7 +26,7 @@ const HomeMenu = ({ className }: SectionProps) => {
         header={'Hot Meals'}
         description={'From classic favorites to innovative creations, our hot meals promise a delightful symphony of flavors that will leave you craving for more.'}
       />
-      <div className='grid md:grid-cols-3 md:gap-0 grid-cols-1 gap-4'>
+      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
         {menuItems && menuItems.map((menuItem, index) => (
           <HomeMenuItemCard key={menuItem._id} menuItem={menuItem} index={index} />
         ))}

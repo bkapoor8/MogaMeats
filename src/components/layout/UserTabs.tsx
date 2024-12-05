@@ -17,14 +17,14 @@ const UserTabs = ({ admin, className }: UserTabsProps) => {
   const inactiveTabStyle = "bg-dark border-primary text-primary hover:bg-primary hover:text-dark hover:border-white"
 
   return (
-    <div className={`w-full flex justify-center items-center gap-6 ${className}`}>
+    <div className={`w-full flex flex-wrap justify-center items-center gap-6 ${className}`}>
       <Button
         as={Link}
         fullWidth
         radius="full"
         href="/profile"
         startContent={<UserIcon className={"w-6 stroke-2"} />}
-        className={`border-2 font-semibold ${pathname.includes("/profile") ? activeTabStyle : inactiveTabStyle}`}>
+        className={`border-2 font-semibold ${pathname.includes("/profile") ? activeTabStyle : inactiveTabStyle} sm:w-auto md:w-auto lg:w-auto`}>
         Profile
       </Button>
       <Button
@@ -33,7 +33,7 @@ const UserTabs = ({ admin, className }: UserTabsProps) => {
         radius="full"
         href="/orders"
         startContent={<ShoppingBagIcon className={"w-6 stroke-2"} />}
-        className={`border-2 font-semibold ${pathname.includes("/orders") ? activeTabStyle : inactiveTabStyle}`}>
+        className={`border-2 font-semibold ${pathname.includes("/orders") ? activeTabStyle : inactiveTabStyle} sm:w-auto md:w-auto lg:w-auto`}>
         Orders
       </Button>
       {admin && (
@@ -44,7 +44,7 @@ const UserTabs = ({ admin, className }: UserTabsProps) => {
             radius="full"
             href="/categories"
             startContent={<TagIcon className={"w-6 stroke-2"} />}
-            className={`border-2 font-semibold ${pathname.includes("/categories") ? activeTabStyle : inactiveTabStyle}`}>
+            className={`border-2 font-semibold ${pathname.includes("/categories") ? activeTabStyle : inactiveTabStyle} sm:w-auto md:w-auto lg:w-auto`}>
             Categories
           </Button>
           <Button
@@ -53,7 +53,7 @@ const UserTabs = ({ admin, className }: UserTabsProps) => {
             radius="full"
             href="/menu-items"
             startContent={<MenuIcon className={"w-6 stroke-2"} />}
-            className={`border-2 ${pathname.includes("/menu-items") ? activeTabStyle : inactiveTabStyle}`}>
+            className={`border-2 ${pathname.includes("/menu-items") ? activeTabStyle : inactiveTabStyle} sm:w-auto md:w-auto lg:w-auto`}>
             Menu Items
           </Button>
           <Button
@@ -62,7 +62,7 @@ const UserTabs = ({ admin, className }: UserTabsProps) => {
             radius="full"
             href="/users"
             startContent={<UsersIcon className={"w-6 stroke-2"} />}
-            className={`border-2 ${pathname.includes("/users") ? activeTabStyle : inactiveTabStyle}`}>
+            className={`border-2 ${pathname.includes("/users") ? activeTabStyle : inactiveTabStyle} sm:w-auto md:w-auto lg:w-auto`}>
             Users
           </Button>
         </>

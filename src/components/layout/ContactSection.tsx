@@ -1,21 +1,21 @@
 'use client'
-import { Button, Input, Textarea } from "@nextui-org/react";
-import { FormEvent, LegacyRef, useMemo, useRef, useState } from "react";
-import Map from "../common/Map";
 import { SectionProps } from "@/types/SectionProps";
+import Map from "../common/Map";
 import ContactUsForm from "../common/form/ContactUsForm";
 
-const ContactSecton = ({ className }: SectionProps) => {
+const ContactSection = ({ className }: SectionProps) => {
   return (
-    <section id="contact" className={className}>
-      <div className="grid grid-cols-2">
-        <div className="flex flex-col justify-center items-center gap-5">
-          <Map />
+    <section id="contact" className={`${className} overflow-hidden`}>
+      <div className="flex flex-col lg:grid lg:grid-cols-2">
+        <div className="flex flex-col justify-center items-center gap-5 p-4 sm:p-6 lg:p-8">
+          <div className="w-full h-[300px] sm:h-[400px] lg:h-full">
+            <Map />
+          </div>
         </div>
-        <div className="container py-20 max-w-4xl">
-          <div className="text-center mb-10">
-            <h1 className="mb-2">Contact Us</h1>
-            <p className="text-gray-400">We&apos;d love to talk about how we can help you.</p>
+        <div className="container pb-10 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+          <div className="text-center mb-8 sm:mb-10">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-4">Contact Us</h1>
+            <p className="text-gray-400 text-sm sm:text-base">We&apos;d love to talk about how we can help you.</p>
           </div>
           <ContactUsForm />
         </div>
@@ -24,4 +24,5 @@ const ContactSecton = ({ className }: SectionProps) => {
   )
 }
 
-export default ContactSecton
+export default ContactSection
+
