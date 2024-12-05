@@ -1,4 +1,4 @@
-/** @type {import('next').NextConfig} */
+/ @type {import('next').NextConfig} /
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -12,6 +12,20 @@ const nextConfig = {
       },
     ],
   },
-}
+  async headers() {
+    return [
+      {
+        source: '/:path*', // Match all routes
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+          },
+        ],
+      },
+    ];
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
+
