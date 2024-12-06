@@ -14,7 +14,7 @@ import {
 } from "@nextui-org/react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { ChevronDownIcon } from "@/icons/ChevronDownIcon";
 import { UserIcon } from "@/icons/UserIcon";
 import { TagIcon } from "@/icons/TagIcon";
@@ -25,57 +25,78 @@ import { SignOutIcon } from "@/icons/SignOutIcon";
 import { usePathname } from "next/navigation";
 import { CartContext } from "../../util/ContextProvider";
 import { useProfile } from "../hooks/useProfile";
-import Image from 'next/image';
-import mogameatlogo from '../../assets/Moga_Meats.png';
+import Image from "next/image";
+import mogameatlogo from "../../assets/Moga_Meats.png";
 
 const Header = () => {
   const { data: session } = useSession();
   const { cartProducts } = useContext(CartContext);
   const pathname = usePathname();
   const { data: profileData } = useProfile();
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
+  };
 
   return (
     <Navbar className="font-semibold bg-dark py-3 lg:px-8">
-   <NavbarBrand>
-      <Link href="/">
-        <Image 
-          src={mogameatlogo}
-          alt="Moga Meat Bar & Grill Logo"
-          width={140} 
-          height={50} 
-          className="block md:inline"
-        />
-      </Link>
-   </NavbarBrand>
+      <NavbarBrand>
+        <Link href="/">
+          <Image
+            src={mogameatlogo}
+            alt="Moga Meat Bar & Grill Logo"
+            width={140}
+            height={50}
+            className="block md:inline"
+          />
+        </Link>
+      </NavbarBrand>
 
-
-      {/* Mobile Menu Icon */}
+      {/* Mobile Sidebar Toggle */}
       <NavbarContent className="lg:hidden" justify="start">
-        <Dropdown>
-          <DropdownTrigger>
-            <Button isIconOnly className="bg-transparent">
-              <MenuIcon className="w-6 stroke-white" />
-            </Button>
-          </DropdownTrigger>
-          <DropdownMenu color="primary" aria-label="Navigation Menu">
-            <DropdownItem key="home" href="/">
-              Home
-            </DropdownItem>
-            <DropdownItem key="menu" href="/menu">
-              Menu
-            </DropdownItem>
-            <DropdownItem key="services" href="/services">
-              Services
-            </DropdownItem>
-            <DropdownItem key="about" href="/about">
-              About
-            </DropdownItem>
-            <DropdownItem key="contact" href="/contact">
-              Contact
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
+        <Button isIconOnly className="bg-transparent" onClick={toggleSidebar}>
+          <MenuIcon className="w-6 stroke-white" />
+        </Button>
       </NavbarContent>
+
+      {/* Sidebar for Mobile */}
+      {isSidebarOpen && (
+        <>
+          {/* Full Black Background */}
+          <div
+            className="fixed inset-0 bg-black z-40"
+            onClick={toggleSidebar}
+          ></div>
+
+          {/* Sidebar */}
+          <div className="fixed top-0 left-0 bg-black z-50 pt-12 pb-12 pl-12 pr-44 shadow-lg">
+            <button
+              className="absolute top-4 right-4 text-white"
+              onClick={toggleSidebar}
+            >
+              ✖
+            </button>
+            <nav className="flex flex-col space-y-4 mt-8">
+              <Link href="/" className="hover:text-primary">
+                Home
+              </Link>
+              <Link href="/menu" className="hover:text-primary">
+                Menu
+              </Link>
+              <Link href="/services" className="hover:text-primary">
+                Services
+              </Link>
+              <Link href="/about" className="hover:text-primary">
+                About
+              </Link>
+              <Link href="/contact" className="hover:text-primary">
+                Contact
+              </Link>
+            </nav>
+          </div>
+        </>
+      )}
 
       {/* Desktop Navigation */}
       <NavbarContent className="hidden lg:flex gap-8" justify="center">
@@ -106,9 +127,10 @@ const Header = () => {
         </NavbarItem>
       </NavbarContent>
 
+      {/* User Profile Section */}
       <NavbarContent justify="end">
         {profileData ? (
-          <div className="flex items-center ">
+          <div className="flex items-center">
             <Dropdown className="text-gray-300">
               <DropdownTrigger>
                 <Button
@@ -166,20 +188,19 @@ const Header = () => {
                 >
                   Users
                 </DropdownItem>
-
                 <DropdownItem
                   className={profileData.isAdmin ? "" : "hidden"}
                   key="carts"
                   href="/cart"
                   startContent={<UsersIcon className="w-6" />}
                 >
-                  Carts  {cartProducts.length > 0 && (
-                <span className="w-4 h-4 rounded-full bg-primary text-dark text-xs absolute right-1 top-0">
-                  {cartProducts.length}
-                </span>
+                  Carts{" "}
+                  {cartProducts.length > 0 && (
+                    <span className="w-4 h-4 rounded-full bg-primary text-dark text-xs absolute right-1 top-0">
+                      {cartProducts.length}
+                    </span>
                   )}
                 </DropdownItem>
-                
                 <DropdownItem
                   key="signOut"
                   startContent={<SignOutIcon className="w-6" />}
@@ -192,39 +213,26 @@ const Header = () => {
           </div>
         ) : (
           <>
-          <div className="flex items-center ">
-            <Dropdown className="text-gray-300">
-              <DropdownTrigger>
-                <Button
-                  className="bg-transparent h-full"
-                
-                  startContent={
-                    <UsersIcon className="w-6" />
-                  }
-                  endContent={
-                    <ChevronDownIcon className="w-4 stroke-white" />
-                  }
-              
-                  disableAnimation
-                />
-               
-              </DropdownTrigger>
-              <DropdownMenu aria-label="User Menu" color="primary">
-                <DropdownItem
-                  key="login"
-                  href="/login"
-                >
-                  Login
-                </DropdownItem>
-                <DropdownItem
-                  key="register"
-                  href="/register"
-                >
-                  SignUp
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
+            <div className="flex items-center">
+              <Dropdown className="text-gray-300">
+                <DropdownTrigger>
+                  <Button
+                    className="bg-transparent h-full"
+                    startContent={<UsersIcon className="w-6" />}
+                    endContent={<ChevronDownIcon className="w-4 stroke-white" />}
+                    disableAnimation
+                  />
+                </DropdownTrigger>
+                <DropdownMenu aria-label="User Menu" color="primary">
+                  <DropdownItem key="login" href="/login">
+                    Login
+                  </DropdownItem>
+                  <DropdownItem key="register" href="/register">
+                    SignUp
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
           </>
         )}
       </NavbarContent>
@@ -233,4 +241,3 @@ const Header = () => {
 };
 
 export default Header;
-
