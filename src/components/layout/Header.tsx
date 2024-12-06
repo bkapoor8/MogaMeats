@@ -25,6 +25,8 @@ import { SignOutIcon } from "@/icons/SignOutIcon";
 import { usePathname } from "next/navigation";
 import { CartContext } from "../../util/ContextProvider";
 import { useProfile } from "../hooks/useProfile";
+import Image from 'next/image';
+import mogameatlogo from '../../assets/Moga_Meats.png';
 
 const Header = () => {
   const { data: session } = useSession();
@@ -34,11 +36,18 @@ const Header = () => {
 
   return (
     <Navbar className="font-semibold bg-dark py-3 lg:px-8">
-      <NavbarBrand>
-        <Link href="/" className="text-primary text-xl lg:text-2xl font-josefin">
-          Moga Meat Bar & Grill
-        </Link>
-      </NavbarBrand>
+   <NavbarBrand>
+      <Link href="/">
+        <Image 
+          src={mogameatlogo}
+          alt="Moga Meat Bar & Grill Logo"
+          width={140} 
+          height={50} 
+          className="block md:inline"
+        />
+      </Link>
+   </NavbarBrand>
+
 
       {/* Mobile Menu Icon */}
       <NavbarContent className="lg:hidden" justify="start">
