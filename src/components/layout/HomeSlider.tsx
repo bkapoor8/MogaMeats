@@ -5,7 +5,7 @@ import { SectionProps } from '@/types/SectionProps'
 const HomeSlider = ({ className }: SectionProps) => {
   return (
     <section className={className}>
-      <div data-hs-carousel='{"loadingClasses": "opacity-0", "isAutoPlay": true}' className="relative h-[850px] z-0">
+      <div data-hs-carousel='{"loadingClasses": "opacity-0", "isAutoPlay": false}' className="relative h-[850px] z-0">
         <div className="hs-carousel relative overflow-hidden w-full h-full">
           <div className="hs-carousel-body w-full absolute top-0 bottom-0 start-0 flex flex-nowrap duration-700 ease-in-out delay-200 opacity-0">
             
@@ -22,19 +22,16 @@ const HomeSlider = ({ className }: SectionProps) => {
             </SlideBackground>
 
             {/* Second Slide */}
-            <SlideBackground bgImage='/assets/slider_bg_2.jpg'>
-              <div className="w-full flex flex-row gap-6 justify-center items-center h-full absolute z-10">
-                <div className='w-1/4'>
-                  {/* <Image src="/assets/slider_pizza_1.png" alt=""/> */}
-                </div>
-                <div className='max-w-xl ml-6'>
-                  <span className="font-nothingYouCouldDo text-primary text-[32px] sm:text-[36px] md:text-[40px] mb-4">Crunchy</span>
-                  <h1 className="mb-8 text-[28px] sm:text-[32px] md:text-[36px] lg:text-[40px]"> Spicing up London one dish at a time!</h1>
-                  <p>
-                    <Button as={Link} href='/menu' color='primary' radius='none' size='lg' className='py-4 px-6 text-dark'>Order Now</Button>
-                    <Button as={Link} href='/menu' radius='none' size='lg' className='bg-transparent border-2 py-4 px-6 ml-2'>View Menu</Button>
-                  </p>
-                </div>
+            <SlideBackground bgImage="">
+              <div>
+                <video
+                  src="/assets/moga-meat-video.mp4" 
+                  className="w-full h-full object-cover"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                />
               </div>
             </SlideBackground>
 

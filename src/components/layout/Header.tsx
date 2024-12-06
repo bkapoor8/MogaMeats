@@ -46,8 +46,8 @@ const Header = () => {
           <Image
             src={mogameatlogo}
             alt="Moga Meat Bar & Grill Logo"
-            width={140}
-            height={50}
+            width={100}
+            height={60}
             className="block md:inline"
           />
         </Link>
