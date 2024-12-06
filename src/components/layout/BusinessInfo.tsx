@@ -1,9 +1,19 @@
+"use client";
 import { ClockIcon } from '@/icons/ClockIcon'
 import { LocationIcon } from '@/icons/LocationIcon'
 import { PhoneIcon } from '@/icons/PhoneIcon'
 import { SectionProps } from '@/types/SectionProps'
+import "aos/dist/aos.css";
+import { useEffect } from 'react';
 
 const BusinessInfo = ({className}:SectionProps) => {
+  useEffect(() => {
+    const AOS = require("aos"); 
+    AOS.init({
+      duration: 1000, 
+      easing: "ease-in-out", 
+    });
+  }, []);
   const infoItems = [
     {
       icon: <PhoneIcon className={'w-8 sm:w-10 fill-primary'}/>,
@@ -33,14 +43,14 @@ const BusinessInfo = ({className}:SectionProps) => {
                 {Array.isArray(item.title) ? (
                   item.title.map((title, i) => (
                     <div key={i}>
-                      <p className='text-base sm:text-lg font-semibold'>{title}</p>
-                      <p className='text-sm sm:text-base text-gray-400'>{item.subtitle[i]}</p>
+                      <p className='text-base sm:text-lg font-semibold' data-aos="fade-right">{title}</p>
+                      <p className='text-sm sm:text-base text-gray-400' data-aos="fade-left">{item.subtitle[i]}</p>
                     </div>
                   ))
                 ) : (
                   <>
-                    <p className='text-base sm:text-lg font-semibold'>{item.title}</p>
-                    <p className='text-sm sm:text-base text-gray-400'>{item.subtitle}</p>
+                    <p className='text-base sm:text-lg font-semibold' data-aos="fade-right">{item.title}</p>
+                    <p className='text-sm sm:text-base text-gray-400' data-aos="fade-left">{item.subtitle}</p>
                   </>
                 )}
               </div>

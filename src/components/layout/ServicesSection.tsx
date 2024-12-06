@@ -4,8 +4,16 @@ import { PizzaIcon } from '@/icons/PizzaIcon'
 import { ScooterIcon } from '@/icons/ScooterIcon'
 import { SectionProps } from '@/types/SectionProps'
 import { motion } from "framer-motion"
+import { useEffect } from 'react'
 
 const ServicesSection = ({className}:SectionProps) => {
+  useEffect(() => {
+    const AOS = require("aos"); // Dynamically require AOS
+    AOS.init({
+      duration: 1000, // Animation duration
+      easing: "ease-in-out", // Animation easing
+    });
+  }, []);
   const services = [
     {
       icon: <DietFoodIcon className={'w-12 sm:w-16'} />,
@@ -33,7 +41,7 @@ const ServicesSection = ({className}:SectionProps) => {
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6'>
           {services.map((service, index) => (
             <div key={index} className='flex flex-col gap-3 text-center p-4 sm:p-6'>
-              <div className="flex items-center text-center justify-center mb-3 sm:mb-5">
+              <div className="flex items-center text-center justify-center mb-3 sm:mb-5" data-aos="fade-up">
                 <motion.span
                   initial={{ rotate: 0 }}
                   whileHover={{ rotate: 225, transition: { duration: 1, ease: 'easeInOut' } }}
@@ -42,8 +50,8 @@ const ServicesSection = ({className}:SectionProps) => {
                 </motion.span>
                 <span className='absolute'>{service.icon}</span>
               </div>
-              <h3 className='uppercase text-lg sm:text-xl font-semibold'>{service.title}</h3>
-              <div className='text-sm sm:text-base'>
+              <h3 className='uppercase text-lg sm:text-xl font-semibold' data-aos="fade-left">{service.title}</h3>
+              <div className='text-sm sm:text-base' data-aos="fade-right">
                 {service.description}
               </div>
             </div>

@@ -1,8 +1,20 @@
-import { Button, Image, Link } from '@nextui-org/react'
-import SlideBackground from './SlideBackground'
-import { SectionProps } from '@/types/SectionProps'
+ "use client";
+import { Button, Image, Link } from '@nextui-org/react';
+import SlideBackground from './SlideBackground';
+import { SectionProps } from '@/types/SectionProps';
+import { useEffect } from "react";
+import "aos/dist/aos.css";
 
 const HomeSlider = ({ className }: SectionProps) => {
+ 
+  useEffect(() => {
+    const AOS = require("aos"); 
+    AOS.init({
+      duration: 1000, 
+      easing: "ease-in-out", 
+    });
+  }, []);
+
   return (
     <section className={className}>
       <div data-hs-carousel='{"loadingClasses": "opacity-0", "isAutoPlay": false}' className="relative h-[850px] z-0">
@@ -12,11 +24,13 @@ const HomeSlider = ({ className }: SectionProps) => {
             {/* First Slide */}
             <SlideBackground bgImage='/assets/slider_bg_1.jpg'>
               <div className="w-full flex flex-col justify-center text-center h-full absolute z-10">
-                <span className="font-nothingYouCouldDo text-primary text-[32px] sm:text-[36px] md:text-[40px] mb-4">Welcome</span>
-                <h1 className="mb-8 text-[28px] sm:text-[32px] md:text-[36px] lg:text-[40px]">From India straight to your <span className='block'>door steps</span></h1>
+                <span className="font-nothingYouCouldDo text-primary text-[32px] sm:text-[36px] md:text-[40px] mb-4" data-aos="fade-up" >Welcome</span>
+                <h1 className="mb-8 text-[28px] sm:text-[32px] md:text-[36px] lg:text-[40px]" data-aos="fade-right">
+                  From India straight to your <span className='block'>door steps</span>
+                </h1>
                 <p>
-                  <Button as={Link} href='/menu' color='primary' radius='none' size='lg' className='py-4 px-6 text-dark'>Order Now</Button>
-                  <Button as={Link} href='/menu' radius='none' size='lg' className='bg-transparent border-2 py-4 px-6 ml-2'>View Menu</Button>
+                  <Button as={Link} href='/menu' color='primary' radius='none' size='lg' className='py-4 px-6 text-dark' data-aos="fade-left">Order Now</Button>
+                  <Button as={Link} href='/menu' radius='none' size='lg' className='bg-transparent border-2 py-4 px-6 ml-2' data-aos="fade-right">View Menu</Button>
                 </p>
               </div>
             </SlideBackground>
@@ -49,7 +63,7 @@ const HomeSlider = ({ className }: SectionProps) => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default HomeSlider
+export default HomeSlider;
