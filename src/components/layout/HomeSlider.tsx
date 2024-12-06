@@ -26,7 +26,7 @@ const HomeSlider = ({ className }: SectionProps) => {
               <div>
                 <video
                   src="/assets/moga-meat-video.mp4" 
-                  className="w-full h-full object-cover"
+                  className="w-[100%] h-full object-cover"
                   autoPlay
                   muted
                   loop
