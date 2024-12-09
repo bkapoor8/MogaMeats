@@ -40,7 +40,7 @@ const Header = () => {
   };
 
   return (
-    <Navbar className="font-semibold bg-dark py-3 lg:px-8">
+    <Navbar className="font-semibold bg-dark py-3 lg:px-8 overflow-hidden">
       <NavbarBrand>
         <Link href="/">
           <Image

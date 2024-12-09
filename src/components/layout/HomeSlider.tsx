@@ -1,9 +1,10 @@
- "use client";
-import { Button, Image, Link } from '@nextui-org/react';
+"use client";
+import { Button, Link } from '@nextui-org/react';
 import SlideBackground from './SlideBackground';
 import { SectionProps } from '@/types/SectionProps';
 import { useEffect } from "react";
 import "aos/dist/aos.css";
+
 
 const HomeSlider = ({ className }: SectionProps) => {
  
@@ -15,32 +16,34 @@ const HomeSlider = ({ className }: SectionProps) => {
     });
   }, []);
 
+
   return (
-    <section className={className}>
+    <section className={`${className} overflow-hidden`}>
       <div data-hs-carousel='{"loadingClasses": "opacity-0", "isAutoPlay": false}' className="relative h-[850px] z-0">
-        <div className="hs-carousel relative overflow-hidden w-full h-full">
+        <div className="hs-carousel relative w-full h-full">
           <div className="hs-carousel-body w-full absolute top-0 bottom-0 start-0 flex flex-nowrap duration-700 ease-in-out delay-200 opacity-0">
             
             {/* First Slide */}
             <SlideBackground bgImage='/assets/slider_bg_1.jpg'>
-              <div className="w-full flex flex-col justify-center text-center h-full absolute z-10">
-                <span className="font-nothingYouCouldDo text-primary text-[32px] sm:text-[36px] md:text-[40px] mb-4" data-aos="fade-up" >Welcome</span>
-                <h1 className="mb-8 text-[28px] sm:text-[32px] md:text-[36px] lg:text-[40px]" data-aos="fade-right">
+              <div className="w-full flex flex-col justify-center items-center text-center h-full absolute z-10 pl-4">
+                <span className="font-nothingYouCouldDo text-primary text-[32px] sm:text-[36px] md:text-[40px] mb-4" data-aos="fade-up">Welcome</span>
+                <h1 className="mb-8 text-[28px] sm:text-[32px] md:text-[36px] lg:text-[40px] max-w-4xl" data-aos="fade-right">
                   From India straight to your <span className='block'>door steps</span>
                 </h1>
-                <p>
+                <div className="flex flex-wrap justify-center gap-2">
                   <Button as={Link} href='/menu' color='primary' radius='none' size='lg' className='py-4 px-6 text-dark' data-aos="fade-left">Order Now</Button>
-                  <Button as={Link} href='/menu' radius='none' size='lg' className='bg-transparent border-2 py-4 px-6 ml-2' data-aos="fade-right">View Menu</Button>
-                </p>
+                  <Button as={Link} href='/menu' radius='none' size='lg' className='bg-transparent border-2 py-4 px-6' data-aos="fade-right">View Menu</Button>
+                </div>
               </div>
             </SlideBackground>
 
+
             {/* Second Slide */}
             <SlideBackground bgImage="">
-              <div>
+              <div className="w-full h-full">
                 <video
                   src="/assets/moga-meat-video.mp4" 
-                  className="w-[100%] h-full object-cover"
+                  className="w-full h-full object-cover"
                   autoPlay
                   muted
                   loop
@@ -49,16 +52,18 @@ const HomeSlider = ({ className }: SectionProps) => {
               </div>
             </SlideBackground>
 
+
           </div>
         </div>
+
 
         {/* Indicator buttons */}
         <div className="hs-carousel-pagination flex justify-center absolute bottom-3 start-0 end-0 space-x-3">
           <span className="hs-carousel-active:bg-white hs-carousel-active:border-none w-[18px] h-[18px] border-2 border-gray-400 rounded-full cursor-pointer flex items-center justify-center">
-            <span className="hs-carousel-active:bg-white hs-carousel-active:border-gray-500 w-3 h-3 border border-gray-400 rounded-full cursor-pointer "></span>
+            <span className="hs-carousel-active:bg-white hs-carousel-active:border-gray-500 w-3 h-3 border border-gray-400 rounded-full cursor-pointer"></span>
           </span>
           <span className="hs-carousel-active:bg-white hs-carousel-active:border-none w-[18px] h-[18px] border-2 border-gray-400 rounded-full cursor-pointer flex items-center justify-center">
-            <span className="hs-carousel-active:bg-white hs-carousel-active:border-gray-500 w-3 h-3 border border-gray-400 rounded-full cursor-pointer "></span>
+            <span className="hs-carousel-active:bg-white hs-carousel-active:border-gray-500 w-3 h-3 border border-gray-400 rounded-full cursor-pointer"></span>
           </span>
         </div>
       </div>
@@ -66,4 +71,7 @@ const HomeSlider = ({ className }: SectionProps) => {
   );
 };
 
+
 export default HomeSlider;
+
+

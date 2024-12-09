@@ -33,7 +33,7 @@ const BusinessInfo = ({className}:SectionProps) => {
   ]
 
   return (
-    <section className={`${className} bg-dark`}>
+    <section className={`${className} bg-dark overflow-hidden`}>
       <div className='container mx-auto px-4 py-6 sm:py-8'>
         <div className='flex flex-col sm:flex-row justify-around gap-8 sm:gap-4 md:gap-8 lg:gap-16'>
           {infoItems.map((item, index) => (
