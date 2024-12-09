@@ -33,7 +33,7 @@ const ServicesSection = ({className}:SectionProps) => {
   ]
 
   return (
-    <section className={`bg-[url('/assets/bg_wallpaper.png')] bg-repeat text-dark ${className}`}>
+    <section className={`bg-[url('/assets/bg_wallpaper.png')] bg-repeat text-dark overflow-hidden ${className}`}>
       <div className='container py-8 sm:py-12'>
         <div className="container max-w-4xl text-center mb-6 sm:mb-10">
           <h1 className="font-semibold mb-4 text-2xl sm:text-3xl lg:text-4xl">Our Services</h1>
