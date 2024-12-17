@@ -22,7 +22,15 @@ const MenuItemForm = ({ menuItem, buttonText, onSubmit, onDelete }: MenuItemForm
   const [name, setName] = useState<string>(menuItem?.name || '');
   const [description, setDescription] = useState<string>(menuItem?.description || '');
   const [category, setCategory] = useState<string>(menuItem?.category || '');
-  const [basePrice, setBasePrice] = useState<string>(menuItem?.basePrice.toString() || '');
+  
+  // const [basePrice, setBasePrice] = useState<string>(menuItem?.basePrice.toString() || '');
+  const [basePrice, setBasePrice] = useState<number>(() => {
+    if (typeof menuItem?.basePrice === 'string') {
+      return parseFloat(menuItem?.basePrice);
+    } else {
+      return menuItem?.basePrice || 0; // Default to 0 if no basePrice is present
+    }
+  });
   const [categories, setCategories] = useState<Category[]>([]);
   const [sizes, setSizes] = useState<MenuItemAddOn[]>(menuItem?.sizes || []);
   const [extraIngredientsPrices, setExtraIngredientsPrices] = useState<MenuItemAddOn[]>(menuItem?.extraIngredientsPrices || []);
@@ -73,7 +81,7 @@ const MenuItemForm = ({ menuItem, buttonText, onSubmit, onDelete }: MenuItemForm
           )}
         </Select>
         <label> Base Price</label>
-        <input type="number" placeholder='Base Price' value={basePrice ?? ''} onChange={e => setBasePrice(e.target.value)} className="input" />
+        <input type="number" placeholder='Base Price' value={basePrice || ''} onChange={(e) => setBasePrice(parseFloat(e.target.value) || 0)} className="input" />
         <MenuItemAddOnsInput addOnName={"Sizes"} addLabel={"Add item size"} props={sizes} setProps={setSizes} />
         <MenuItemAddOnsInput addOnName={"Extra ingredients"} addLabel={"Add ingredients price"} props={extraIngredientsPrices} setProps={setExtraIngredientsPrices} />
         <Button type='submit' className='mt-4 font-semibold hover:text-white' color="primary" fullWidth >{buttonText}</Button>

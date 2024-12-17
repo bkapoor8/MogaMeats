@@ -13,7 +13,7 @@ const ImageUploader = ({ setImageLink, children }: ImageUploaderProps) => {
     if (files && files.length === 1) {
       const formData = new FormData;
       formData.set('file', files[0]);
-
+      console.log('files[0]',files[0]);
       const uploadPromise = new Promise<string | undefined>(async (resolve, reject) => {
         await fetch('/api/upload', {
           method: 'POST',

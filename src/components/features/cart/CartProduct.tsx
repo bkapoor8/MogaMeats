@@ -26,7 +26,7 @@ const CartProduct = ({ product, productPrice, onRemove }: CartProductProps) => {
           <div className="text-sm text-gray-300 py-1">
             Size:{" "}
             <span>
-              {product.selectedSize.name} + Tk 
+              {product.selectedSize.name} + $
               {(product.selectedSize.price as number).toFixed(2)}
             </span>
           </div>
@@ -35,7 +35,7 @@ const CartProduct = ({ product, productPrice, onRemove }: CartProductProps) => {
           <div className="text-sm text-gray-300">
             {product.selectedExtras.map((extra, index) => (
               <div key={index}>
-                {extra.name} + Tk {(extra.price as number).toFixed(2)}
+                {extra.name} + $ {(extra.price as number).toFixed(2)}
               </div>
             ))}
           </div>
@@ -45,7 +45,7 @@ const CartProduct = ({ product, productPrice, onRemove }: CartProductProps) => {
         <p className="font-semibold">Quantity</p>
         <p>1</p>
       </div>
-      <div className="text-right font-semibold">Tk {productPrice.toFixed(2)}</div>
+      <div className="text-right font-semibold">$ {productPrice.toFixed(2)}</div>
       {!!onRemove && (
         <Tooltip content="Remove">
           <div className="ml-6 cursor-pointer" onClick={onRemove}>

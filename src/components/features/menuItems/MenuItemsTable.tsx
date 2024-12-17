@@ -72,7 +72,9 @@ const MenuItemsTable = ({ menuItems, onDelete }: MenuItemsTableProps) => {
                 {categories.find((c) => c._id === menuItem.category)?.name}
               </TableCell>
               <TableCell>
-                {(menuItem.basePrice as number).toFixed(2)} TK
+              {typeof menuItem.basePrice === 'number' 
+                ? `${menuItem.basePrice.toFixed(2)} $` 
+                : '0.00 '} 
               </TableCell>
               <TableCell>
                 <div className="relative flex items-center gap-2">

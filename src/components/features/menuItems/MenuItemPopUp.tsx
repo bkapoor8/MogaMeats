@@ -48,7 +48,7 @@ const MenuItemPopUp = ({ menuItem, setShowPopUp, onAdd }: MenuItemPopUpProps) =>
                     checked={selectedSize?.name === size.name}
                     onChange={() => setSelectedSize(size)}
                   />
-                  {size.name} TK. {menuItem.basePrice as string + size.price}
+                  {size.name} $. {menuItem.basePrice as string + size.price}
                 </label>
               ))}
             </div>
@@ -64,7 +64,7 @@ const MenuItemPopUp = ({ menuItem, setShowPopUp, onAdd }: MenuItemPopUpProps) =>
                     checked={selectedExtras.map(e => e._id).includes(extraIngredient._id)}
                     onChange={(e) => handleSelectExtras(e, extraIngredient)}
                   />
-                  {extraIngredient.name} TK. {extraIngredient.price}
+                  {extraIngredient.name} $. {extraIngredient.price}
                 </label>
               ))}
             </div>
@@ -76,7 +76,7 @@ const MenuItemPopUp = ({ menuItem, setShowPopUp, onAdd }: MenuItemPopUpProps) =>
              hover:text-light hover:border-dark rounded-full transition-all whitespace-nowrap'
              onClick={() => onAdd(menuItem, selectedSize, selectedExtras)}
           >
-            Add to Cart <span className='font-semibold'>TK. {addToCartPrice}</span>
+            Add to Cart <span className='font-semibold'>$. {addToCartPrice}</span>
           </button>
           <Button color='danger' variant='flat' radius='full' className='my-2' fullWidth onClick={() => setShowPopUp(false)}>Cancel</Button>
         </div>
