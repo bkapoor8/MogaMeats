@@ -1,15 +1,11 @@
 "use client";
-import dynamic from "next/dynamic";
 import { Button, Link } from "@nextui-org/react";
 import { SectionProps } from "@/types/SectionProps";
 import { useEffect } from "react";
 import "aos/dist/aos.css";
+import SlideBackground from "./SlideBackground"; 
 
 
-const SlideBackground = dynamic(() => import("./SlideBackground"), {
-  ssr: false, 
-  loading: () => <div>Loading slide...</div>, 
-});
 
 const HomeSlider = ({ className }: SectionProps) => {
   useEffect(() => {
