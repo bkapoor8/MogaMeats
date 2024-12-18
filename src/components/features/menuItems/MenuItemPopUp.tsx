@@ -13,7 +13,9 @@ interface MenuItemPopUpProps {
 const MenuItemPopUp = ({ menuItem, setShowPopUp, onAdd }: MenuItemPopUpProps) => {
   const [selectedSize, setSelectedSize] = useState(menuItem.sizes[0] || null);
   const [selectedExtras, setSelectedExtras] = useState<MenuItemAddOn[]>([]);
-  const addToCartPrice = calCartProductPrice({ menuItem, selectedSize, selectedExtras });
+  const [addToCard , setAddToCard] = useState(false);
+  const addToCartPrice = calCartProductPrice({ menuItem, selectedSize, selectedExtras});
+ 
 
   function handleSelectExtras(e: ChangeEvent<HTMLInputElement>, extraIngredient: MenuItemAddOn): void {
     const checked = e.target.checked;
@@ -45,10 +47,15 @@ const MenuItemPopUp = ({ menuItem, setShowPopUp, onAdd }: MenuItemPopUpProps) =>
                   <input
                     type='radio'
                     name='size'
-                    checked={selectedSize?.name === size.name}
-                    onChange={() => setSelectedSize(size)}
+                    // checked={selectedSize?.name === size.name}
+                    onChange={() => {
+                      setSelectedSize(size);
+                      setAddToCard(true);
+                    }}
+                    
                   />
-                  {size.name} $. {menuItem.basePrice as string + size.price}
+                 {size?.name ? `${size.name} $. ${size.price}` : `${menuItem.basePrice}`}
+
                 </label>
               ))}
             </div>
@@ -76,7 +83,7 @@ const MenuItemPopUp = ({ menuItem, setShowPopUp, onAdd }: MenuItemPopUpProps) =>
              hover:text-light hover:border-dark rounded-full transition-all whitespace-nowrap'
              onClick={() => onAdd(menuItem, selectedSize, selectedExtras)}
           >
-            Add to Cart <span className='font-semibold'>$. {addToCartPrice}</span>
+            Add to Cart <span className='font-semibold'>$. {(addToCard) ? addToCartPrice : menuItem.basePrice }</span>
           </button>
           <Button color='danger' variant='flat' radius='full' className='my-2' fullWidth onClick={() => setShowPopUp(false)}>Cancel</Button>
         </div>

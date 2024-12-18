@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 export const CartContext = createContext<ICartContext>({} as ICartContext);
 
 export function calCartProductPrice(product: ICartProduct): number {
-  let price = product.menuItem.basePrice as number;
+  let price = 0;
   if (product.selectedSize) {
     price += product.selectedSize.price as number;
   }
