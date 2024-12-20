@@ -65,9 +65,9 @@ const CartPage = () => {
 
   if (cartProducts.length === 0) {
     return (
-      <section className='max-w-2xl mx-auto my-16'>
-        <div className='my-4 flex flex-col gap-4 items-center'>
-          <p className='text-3xl font-semibold items-center'>Your Shopping Cart is Empty</p>
+      <section className='max-w-2xl mx-auto my-8 px-4 sm:my-16'>
+        <div className='my-4 flex flex-col gap-4 items-center text-center'>
+          <p className='text-2xl sm:text-3xl font-semibold items-center'>Your Shopping Cart is Empty</p>
           <Link href={'/menu'} className='text-primary font-semibold'>
             <span>Continue shopping</span>
           </Link>
@@ -77,35 +77,37 @@ const CartPage = () => {
   }
 
   return (
-    <section className='pt-10 pb-20 max-w-6xl mx-auto'>
-      <Link href={'/menu'} className='text-primary font-semibold'>
+    <section className='pt-6 pb-12 sm:pt-10 sm:pb-20 max-w-6xl mx-auto px-4'>
+      <Link href={'/menu'} className='text-primary font-semibold inline-flex items-center'>
         <ChevronLeftIcon className={'w-4 mr-2'} />
         <span>Continue shopping</span>
       </Link>
       {cartProducts.length > 0 &&
-        <div className='grid grid-cols-5 mt-8 gap-12'>
-          <div className='col-span-3'>
+        <div className='mt-8 space-y-8 lg:space-y-0 lg:grid lg:grid-cols-5 lg:gap-12'>
+          <div className='lg:col-span-3'>
             <h2 className='border-b-1 font-semibold py-3 text-primary'>Cart</h2>
-            <div>
+            <div className='space-y-4 mt-4'>
               {cartProducts && cartProducts.map((product, index) => (
                 <CartProduct key={index} product={product}
                 onRemove={() => removeCartProduct(index)} productPrice={calCartProductPrice(product)} />
               ))}
             </div>
-            <OrderSummary subtotal={subtotal} deviveryFee={5} discount={0} paid={false} />
+            <div className='mt-8'>
+              <OrderSummary subtotal={subtotal} deviveryFee={5} discount={0} paid={false} />
+            </div>
           </div>
-          <div className='col-span-2'>
+          <div className='lg:col-span-2'>
             <h2 className='font-semibold py-3 text-primary'>
               Check Out
             </h2>
-            <div className='rounded-xl p-6 bg-gray-800'>
+            <div className='rounded-xl p-4 sm:p-6 bg-gray-800'>
               <form className='flex flex-col gap-3 mt-3' onSubmit={proceedToCheckOut}>
                 <div>
                   <AddressInputs
                     addressProps={address}
                     setAddressProps={(propName: string, value: string) => handleAddressChange(propName, value)} disabled={false} />
                 </div>
-                <Button type='submit' color='primary' fullWidth>Pay $. {(subtotal + 5).toFixed(2)}</Button>
+                <Button type='submit' color='primary' fullWidth>Pay ${(subtotal + 5).toFixed(2)}</Button>
               </form>
             </div>
           </div>
@@ -116,3 +118,4 @@ const CartPage = () => {
 }
 
 export default CartPage
+
