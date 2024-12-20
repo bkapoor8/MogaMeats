@@ -83,7 +83,7 @@ const MenuItemPopUp = ({ menuItem, setShowPopUp, onAdd }: MenuItemPopUpProps) =>
              hover:text-light hover:border-dark rounded-full transition-all whitespace-nowrap'
              onClick={() => onAdd(menuItem, selectedSize, selectedExtras)}
           >
-            Add to Cart <span className='font-semibold'>$. {(addToCard) ? addToCartPrice : menuItem.basePrice }</span>
+            Add to Cart <span className='font-semibold'>{(addToCard) ? addToCartPrice : menuItem.basePrice }$</span>
           </button>
           <Button color='danger' variant='flat' radius='full' className='my-2' fullWidth onClick={() => setShowPopUp(false)}>Cancel</Button>
         </div>

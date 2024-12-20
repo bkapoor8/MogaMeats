@@ -33,8 +33,9 @@ const MenuItemCard = ({ menuItem }: MenuItemCardProps) => {
 
   return (
     <>
-      <div  className='flex flex-col gap-3 justify-center text-center items-center'>
-        <div style={{ backgroundImage: `url(${menuItem.image})`, borderRadius: '50%' }} className='bg-cover bg-center bg-no-repeat mb-4 w-[150px] h-[150px]'></div>
+     {/* <div className="flex flex-row sm:flex-row gap-3 justify-center text-center items-center"> */}
+     <div className=" flex justify-center items-center gap-2  md:block md:text-center">
+       <div style={{ backgroundImage: `url(${menuItem.image})`, borderRadius: '50%' }} className='bg-cover bg-center bg-no-repeat mb-4 md:w-[150px] md:h-[150px] w-[100px] h-[100px]'></div>
         <div className="flex flex-col gap-1">
           <h3>{menuItem.name}</h3>
           <p className='text-gray-400 line-clamp-3'>{menuItem.description}</p>
