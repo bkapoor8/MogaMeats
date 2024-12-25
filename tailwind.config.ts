@@ -13,6 +13,7 @@ const config: Config = {
   ],
   theme: {
     extend: {
+     
       colors: {
         primary: '#fac564',
         secondary: '#2563eb',
