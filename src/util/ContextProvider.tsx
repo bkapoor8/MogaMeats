@@ -13,6 +13,8 @@ export function calCartProductPrice(product: ICartProduct): number {
   let price = 0;
   if (product.selectedSize) {
     price += product.selectedSize.price as number;
+  }else{
+    price = product.menuItem.basePrice as number;
   }
   if (product.selectedExtras.length > 0) {
     for (const extra of product.selectedExtras) {

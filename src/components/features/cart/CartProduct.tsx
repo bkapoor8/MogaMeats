@@ -21,31 +21,31 @@ const CartProduct = ({ product, productPrice, onRemove }: CartProductProps) => {
         ></div>
       </div>
       <div className="col-span-3 px-4">
-        <p className="font-semibold">{product.menuItem.name}</p>
-        {product.selectedSize && (
+          <p className="font-semibold">{product.menuItem.name}</p>
           <div className="text-sm text-gray-300 py-1">
             Size:{" "}
             <span>
-              {product.selectedSize.name} + $
-              {(product.selectedSize.price as number).toFixed(2)}
+              {product.selectedSize
+                ? `${product.selectedSize.name} + $${(product.selectedSize.price as number).toFixed(2)}`
+                : `$${(product.menuItem.basePrice as number).toFixed(2)}`}
             </span>
           </div>
-        )}
-        {product.selectedExtras.length > 0 && (
-          <div className="text-sm text-gray-300">
-            {product.selectedExtras.map((extra, index) => (
-              <div key={index}>
-                {extra.name} + $ {(extra.price as number).toFixed(2)}
-              </div>
-            ))}
-          </div>
-        )}
+          {product.selectedExtras.length > 0 && (
+            <div className="text-sm text-gray-300">
+              {product.selectedExtras.map((extra, index) => (
+                <div key={index}>
+                  {extra.name} + ${(extra.price as number).toFixed(2)} $
+                </div>
+              ))}
+            </div>
+          )}
       </div>
+
       <div className="items-start text-center">
         <p className="font-semibold">Quantity</p>
         <p>1</p>
       </div>
-      <div className="text-right font-semibold">$ {productPrice.toFixed(2)}</div>
+      <div className="text-right font-semibold">{productPrice.toFixed(2)}$</div>
       {!!onRemove && (
         <Tooltip content="Remove">
           <div className="ml-6 cursor-pointer" onClick={onRemove}>
