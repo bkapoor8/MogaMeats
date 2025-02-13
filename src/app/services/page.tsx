@@ -6,7 +6,7 @@ const ServicesPage = () => {
   return (
     <div>
       <ServicesSection />
-      <HomeMenu className={'py-24'} />
+      {/* <HomeMenu className={'py-24'} /> */}
     </div>
   )
 }

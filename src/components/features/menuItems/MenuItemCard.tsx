@@ -39,7 +39,7 @@ const MenuItemCard = ({ menuItem }: MenuItemCardProps) => {
         style={{
           backgroundImage: `url(${menuItem.image})`,
           borderRadius: '50%',
-          minWidth: '120px',  // Ensures a minimum size
+          minWidth: '120px',  
           minHeight: '120px',
         }}
         className="bg-cover bg-center bg-no-repeat mb-4 md:w-[150px] md:h-[150px] w-[120px] h-[120px]"
