@@ -189,7 +189,7 @@ const Header = () => {
                   Users
                 </DropdownItem>
                 <DropdownItem
-                  className={profileData.isAdmin ? "" : "hidden"}
+                  // className={profileData.isAdmin ? "" : "hidden"}
                   key="carts"
                   href="/cart"
                   startContent={<UsersIcon className="w-6" />}
