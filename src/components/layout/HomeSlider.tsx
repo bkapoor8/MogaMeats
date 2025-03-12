@@ -38,7 +38,7 @@ const HomeSlider = ({ className }: SectionProps) => {
                   className="mb-8 text-[28px] sm:text-[32px] md:text-[36px] lg:text-[40px] max-w-4xl"
                   data-aos="fade-right"
                 >
-                  From India straight to your <span className="block">door steps</span>
+                  Your Favorite Indian Restaurant <span className="block">Right at Your Doorstep!</span>
                 </h1>
                 <div className="flex flex-wrap justify-center gap-2">
                   <Button
