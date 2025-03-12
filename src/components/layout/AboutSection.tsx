@@ -32,22 +32,17 @@ const AboutSection = ({ className }: SectionProps) => {
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 " data-aos="fade-down">Welcome to <span className="text-primary">Moga Meat Bar & Grill</span></h1>
           <div className='text-gray-300 space-y-4' data-aos="fade-down">
             <p>
-              Welcome to Moga Meat Bar and Grill, your go-to spot 
-              for authentic and healthy Indian cuisine in London, Ontario.
-              Since opening in September 2022, we've been passionate about
-              delivering bold flavors and unforgettable dining experiences.
+            "Looking for the best Indian food in London, Ontario? Moga Meat
+             Bar and Grill offers authentic Indian BBQ, juicy grilled meats, 
+             and flavorful curries. Try our butter chicken, chicken tikka, biryani, 
+             and tandoori specialties—freshly prepared with bold Indian spices. 
+             Whether you prefer dine-in, takeout, or delivery, we bring the taste 
+             of India straight to your table. Enjoy mouthwatering kebabs,
+              rich vegetarian dishes, and classic Indian
+             appetizers. Visit us today or order online for the best Indian cuisine near you!
+           
             </p>
-            <p>
-              Specializing in perfectly spiced meats and classic Indian dishes, 
-              we take pride in using the freshest ingredients and traditional 
-              cooking techniques. Whether you're dining in or taking out, our 
-              menu offers something for everyone.
-            </p>
-            <p>
-              At Moga Meat Bar and Grill, we don't just serve 
-              food—we share a piece of India's rich culinary heritage.
-              Come and experience the difference today!
-            </p>
+            
           </div>
         </div>
       </div>
