@@ -32,7 +32,7 @@ const AboutSection = ({ className }: SectionProps) => {
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 " data-aos="fade-down">Welcome to <span className="text-primary">Moga Meat Bar & Grill</span></h1>
           <div className='text-gray-300 space-y-4' data-aos="fade-down">
             <p>
-            "Looking for the best Indian food in London, Ontario? Moga Meat
+             Looking for the best Indian food in London, Ontario? Moga Meat
              Bar and Grill offers authentic Indian BBQ, juicy grilled meats, 
              and flavorful curries. Try our butter chicken, chicken tikka, biryani, 
              and tandoori specialties—freshly prepared with bold Indian spices. 
