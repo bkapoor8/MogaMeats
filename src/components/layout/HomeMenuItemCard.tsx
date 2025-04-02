@@ -3,6 +3,7 @@ import MenuItem from '@/types/MenuItem';
 import { Button, Link } from '@nextui-org/react'
 import { useSession } from 'next-auth/react';
 
+
 interface HomeMenuItemCardProps {
   menuItem: MenuItem;
   index: number;
@@ -42,6 +43,7 @@ const HomeMenuItemCard = ({ menuItem, index }: HomeMenuItemCardProps) => {
               >
                 Order
               </Button>
+
             </div>
           </div>
         </div>
@@ -49,6 +51,7 @@ const HomeMenuItemCard = ({ menuItem, index }: HomeMenuItemCardProps) => {
     );
   } else {
     return (
+      
       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4'>
         <div
           className="flex items-center justify-center"

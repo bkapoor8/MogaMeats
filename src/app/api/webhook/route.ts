@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
 export async function POST(req: NextRequest) {
-  const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-  const endpointSecret = process.env.STRIPE_SIGNING_SECRET;
+  const stripe = require('stripe')("sk_test_51R6PlkKi2RijjSjAximDaz2E5IN3lHaL3NHHpgd1G1mMS4Ded97vdlQV9tc7KIIPyffbY51mkV0Re417aKSM0fQ600cFALK8VV");
+  const endpointSecret = 'whsec_G7dhKGbzOaYtkAnXLT0yJUkopwZO7A1l';
   const body = await req.text();
   const signature = req.headers.get("Stripe-Signature") as string;
   let event: Stripe.Event;

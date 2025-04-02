@@ -6,7 +6,7 @@ import { authOptions } from "../auth/[...nextauth]/route";
 import { MenuItem } from "@/app/models/MenuItem";
 import MenuItemAddOn from "@/types/MenuItemAddOn";
 
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const stripe = require('stripe')("sk_test_51R6PlkKi2RijjSjAximDaz2E5IN3lHaL3NHHpgd1G1mMS4Ded97vdlQV9tc7KIIPyffbY51mkV0Re417aKSM0fQ600cFALK8VV");
 
 export async function POST(req: NextRequest) {
   mongoose.connect("mongodb://siteAdmin:admin123Db@52.200.4.201:27017/mogameat?authSource=admin")
@@ -53,8 +53,8 @@ export async function POST(req: NextRequest) {
   const stripeSession = await stripe.checkout.sessions.create({
     line_items: stripeLineItems,
     mode: 'payment',
-    success_url: `${process.env.NEXTAUTH_URL}/orders/${order._id.toString()}?clear-cart=1`,
-    cancel_url: `${process.env.NEXTAUTH_URL}/cart?canceled=1`,
+    success_url: `https://mogameatbarandgrill.com/orders/${order._id.toString()}?clear-cart=1`,
+    cancel_url: `https://mogameatbarandgrill.com/cart?canceled=1`,
     customer_email: userEmail,
     payment_method_types: ['card'],
     metadata: { orderId: order._id.toString() },

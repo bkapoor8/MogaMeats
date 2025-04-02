@@ -8,11 +8,14 @@ import { ChevronLeftIcon } from '@/icons/ChevronLeftIcon'
 import { Button, Link } from '@nextui-org/react'
 import React, { FormEvent, useContext, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+// import  CloverPayWidget  from "../../components/layout/CloverPayWidget"
+
 
 const CartPage = () => {
   const { cartProducts, removeCartProduct } = useContext(CartContext);
   const [address, setAddress] = useState({});
   const { data: profileData } = useProfile();
+  const [payNow, setPayNow] = useState(false);
 
   useEffect(() => {
     if (profileData) {
@@ -107,7 +110,17 @@ const CartPage = () => {
                     addressProps={address}
                     setAddressProps={(propName: string, value: string) => handleAddressChange(propName, value)} disabled={false} />
                 </div>
-                <Button type='submit' color='primary' fullWidth>Pay {(subtotal + 5).toFixed(2)}$</Button>
+                {/* <Button type='submit' color='primary' fullWidth>Pay {(subtotal + 5).toFixed(2)}$</Button> */}
+                <Button 
+                  type="submit" 
+                  color="primary" 
+                  fullWidth 
+                  onClick={() => setPayNow(true)}
+                >
+                  Pay {(subtotal + 5).toFixed(2)}$
+                </Button>
+
+                {/* {subtotal && <CloverPayWidget amount={parseFloat((subtotal + 5).toFixed(2))} />} */}
               </form>
             </div>
           </div>
