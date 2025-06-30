@@ -47,6 +47,15 @@ const UserTabs = ({ admin, className }: UserTabsProps) => {
             className={`border-2 font-semibold ${pathname.includes("/categories") ? activeTabStyle : inactiveTabStyle} sm:w-auto md:w-auto lg:w-auto`}>
             Categories
           </Button>
+           <Button
+            as={Link}
+            fullWidth
+            radius="full"
+            href="/rawmeatcategories"
+            startContent={<TagIcon className={"w-6 stroke-2"} />}
+            className={`border-2 font-semibold ${pathname.includes("/rawmeatcategories") ? activeTabStyle : inactiveTabStyle} sm:w-auto md:w-auto lg:w-auto`}>
+            Raw Meat Categories
+          </Button>
           <Button
             as={Link}
             fullWidth
