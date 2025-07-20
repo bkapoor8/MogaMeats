@@ -1,9 +1,9 @@
 "use client";
-import { Button, Link } from "@nextui-org/react";
 import { SectionProps } from "@/types/SectionProps";
-import { useEffect } from "react";
+import { Button, Link } from "@nextui-org/react";
 import "aos/dist/aos.css";
-import SlideBackground from "./SlideBackground"; 
+import { useEffect } from "react";
+import SlideBackground from "./SlideBackground";
 
 
 
@@ -43,14 +43,14 @@ const HomeSlider = ({ className }: SectionProps) => {
                 <div className="flex flex-wrap justify-center gap-2">
                   <Button
                     as={Link}
-                    href="/menu"
+                    href="/raw-menu"
                     color="primary"
                     radius="none"
                     size="lg"
                     className="py-4 px-6 text-dark"
                     data-aos="fade-left"
                   >
-                    Order Now
+                   View Raw Meat Menu
                   </Button>
                   <Button
                     as={Link}

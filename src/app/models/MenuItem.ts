@@ -10,6 +10,7 @@ const MenuItemSchema = new mongoose.Schema({
   image: { type: String },
   description: { type: String },
   category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
+  rawmeatcategory: { type: mongoose.Schema.Types.ObjectId, ref: "RawMeatCategory" },
   basePrice: { type: Number },
   sizes: { type: [ExtraPriceSchema] },
   extraIngredientsPrices: { type: [ExtraPriceSchema] },

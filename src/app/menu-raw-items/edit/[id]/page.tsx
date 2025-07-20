@@ -19,7 +19,7 @@ const EditMenuItemPage = () => {
   const [menuItem, setMenuItem] = useState<MenuItem | null>(null);
 
   useEffect(() => {
-    fetch(`/api/menu-items`)
+    fetch(`/api/menu-raw-items`)
       .then((response) => response.json())
       .then((items) => {
         const item = items.find((i: MenuItem) => i._id === id);
@@ -44,7 +44,7 @@ const EditMenuItemPage = () => {
 
     const creationPromise = new Promise(async (resolve, reject) => {
       data = { ...data, _id: id };
-      const response = await fetch("/api/menu-items", {
+      const response = await fetch("/api/menu-raw-items", {
         method: "PUT",
         body: JSON.stringify(data),
         headers: { "Content-Type": "application/json" },
@@ -63,16 +63,12 @@ const EditMenuItemPage = () => {
       error: "Error updating item"
     });
 
-    if(data.rawmeatcategory){
-      router.push('/menu-raw-items')
-    }else{
-      router.push('/menu-items')
-    }
+    router.push('/menu-raw-items')
   }
 
   function handleDeleteMenuItem(): void {
     const deletionPromise = new Promise(async (resolve, reject) => {
-      const response = await fetch(`/api/menu-items?_id=${id}`, {
+      const response = await fetch(`/api/menu-raw-items?_id=${id}`, {
         method: "DELETE"
       }).then((response) => response.json());
       if (response.error) {
@@ -88,7 +84,7 @@ const EditMenuItemPage = () => {
       error: "Error deleting menu item"
     });
 
-    router.push('/menu-items')
+    router.push('/menu-raw-items')
   }
 
   return (
@@ -97,7 +93,7 @@ const EditMenuItemPage = () => {
         <>
           <UserTabs admin={profileData.isAdmin} />
           <Breadcrumbs size='lg' className="mt-12">
-            <BreadcrumbItem href='/menu-items'>Menu Items</BreadcrumbItem>
+            <BreadcrumbItem href='/menu-raw-items'>Raw Meat Menu Items</BreadcrumbItem>
             <BreadcrumbItem>Edit </BreadcrumbItem>
           </Breadcrumbs>
           <div className="max-w-4xl mx-auto mt-12">

@@ -1,14 +1,15 @@
 'use client'
 import ImageUploader from "@/components/common/ImageUploader"
 import { UploadIcon } from "@/icons/UploadIcon"
-import { Avatar, Button, Select, SelectItem, Tooltip } from "@nextui-org/react"
-import { FormEvent, useEffect, useState } from "react"
-import Image from "next/image";
 import Category from "@/types/Category"
 import MenuItem from "@/types/MenuItem"
 import MenuItemAddOn from "@/types/MenuItemAddOn"
-import MenuItemAddOnsInput from "./MenuItemAddOnsInput"
+import RawMeatCategory from "@/types/RawMeatCategory"
+import { Avatar, Button, Radio, RadioGroup, Select, SelectItem, Tooltip } from "@nextui-org/react"
+import Image from "next/image"
+import { FormEvent, useEffect, useState } from "react"
 import ModalContainer from "../../common/ModalContainer"
+import MenuItemAddOnsInput from "./MenuItemAddOnsInput"
 
 interface MenuItemFormProps {
   menuItem: MenuItem | null;
@@ -21,8 +22,11 @@ const MenuItemForm = ({ menuItem, buttonText, onSubmit, onDelete }: MenuItemForm
   const [image, setImage] = useState<string>(menuItem?.image || '');
   const [name, setName] = useState<string>(menuItem?.name || '');
   const [description, setDescription] = useState<string>(menuItem?.description || '');
-  const [category, setCategory] = useState<string>(menuItem?.category || '');
-  
+  const [category, setCategory] = useState(menuItem?.category || null);
+  const [rawmeatcategory, setrawmeatCategory] = useState(menuItem?.rawmeatcategory || null);
+  const [categoryType, setCategoryType] = useState<'category' | 'rawmeatcategory'>(
+    menuItem?.category ? 'category' : menuItem?.rawmeatcategory ? 'rawmeatcategory' : 'category'
+  );  
   // const [basePrice, setBasePrice] = useState<string>(menuItem?.basePrice.toString() || '');
   const [basePrice, setBasePrice] = useState<number>(() => {
     if (typeof menuItem?.basePrice === 'string') {
@@ -32,6 +36,7 @@ const MenuItemForm = ({ menuItem, buttonText, onSubmit, onDelete }: MenuItemForm
     }
   });
   const [categories, setCategories] = useState<Category[]>([]);
+  const [rawcategories, setRawCategories] = useState<RawMeatCategory[]>([]);
   const [sizes, setSizes] = useState<MenuItemAddOn[]>(menuItem?.sizes || []);
   const [extraIngredientsPrices, setExtraIngredientsPrices] = useState<MenuItemAddOn[]>(menuItem?.extraIngredientsPrices || []);
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
@@ -40,6 +45,12 @@ const MenuItemForm = ({ menuItem, buttonText, onSubmit, onDelete }: MenuItemForm
     fetch("/api/categories")
       .then((response) => response.json())
       .then((data) => setCategories(data));
+  }, [])
+
+    useEffect(() => {
+    fetch("/api/rawmeatcategories")
+      .then((response) => response.json())
+      .then((data) => setRawCategories(data));
   }, [])
 
   return (
@@ -61,13 +72,33 @@ const MenuItemForm = ({ menuItem, buttonText, onSubmit, onDelete }: MenuItemForm
           <ImageUploader setImageLink={setImage}/>
         </label>
       </div>
-      <form className='col-span-2' onSubmit={(e) => onSubmit(e, { image, name, description, category, basePrice, sizes, extraIngredientsPrices })}>
+      <form className='col-span-2' onSubmit={(e) => onSubmit(e, { image, name, description, category, rawmeatcategory,basePrice, sizes, extraIngredientsPrices })}>
         <label> Item Name </label>
         <input type="text" placeholder='Item name' value={name ?? ''} onChange={e => setName(e.target.value)} className="input" />
         <label> Description</label>
         <textarea rows={5} placeholder="Description" value={description ?? ''} onChange={e => setDescription(e.target.value)} className="input" />
+        <label> Select Category Type </label>
+        <RadioGroup
+          orientation="horizontal"
+          value={categoryType}
+          onValueChange={(value) => {
+            setCategoryType(value as 'category' | 'rawmeatcategory');
+            // Reset the other category when switching
+            if (value === 'category') {
+              setrawmeatCategory(null);
+            } else {
+              setCategory(null);
+            }
+          }}
+          className="my-2"
+        >
+          <Radio value="category">Category</Radio>
+          <Radio value="rawmeatcategory">Raw Meat Category</Radio>
+        </RadioGroup>
+        {categoryType === 'category' || category ? (
         <Select label="Select a category" size="sm" radius="lg" className="light my-2"
           value={category ?? ''}
+          selectedKeys={category ? [category] : []} // Use selectedKeys for single selection
           onChange={e => setCategory(e.target.value)}>
           {categories.map(c =>
             <SelectItem
@@ -80,6 +111,29 @@ const MenuItemForm = ({ menuItem, buttonText, onSubmit, onDelete }: MenuItemForm
             </SelectItem>
           )}
         </Select>
+        ) : (
+          <Select
+            label="Select a raw meat category"
+            size="sm"
+            radius="lg"
+            className="light my-2"
+            value={rawmeatcategory ?? ''}
+            selectedKeys={rawmeatcategory ? [rawmeatcategory] : []} // Use selectedKeys for single selection
+            onChange={e => setrawmeatCategory(e.target.value)}
+          >
+            {rawcategories.map(rc =>
+              <SelectItem
+                key={rc._id}
+                value={rc._id}
+                startContent={
+                  <Avatar src={rc.image} alt={rc.name} radius="md" className="w-10 h-auto" />
+                }
+              >
+                {rc.name}
+              </SelectItem>
+            )}
+          </Select>
+        )}
         <label> Base Price</label>
         <input type="number" placeholder='Base Price' value={basePrice || ''} onChange={(e) => setBasePrice(parseFloat(e.target.value) || 0)} className="input" />
         <MenuItemAddOnsInput addOnName={"Sizes"} addLabel={"Add item size"} props={sizes} setProps={setSizes} />

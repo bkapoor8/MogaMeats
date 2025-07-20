@@ -1,10 +1,12 @@
+import { MenuItem } from "@/app/models/MenuItem";
+import { Notification } from "@/app/models/Notification";
 import { Order } from "@/app/models/Order";
+import MenuItemAddOn from "@/types/MenuItemAddOn";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "../auth/[...nextauth]/route";
-import { MenuItem } from "@/app/models/MenuItem";
-import MenuItemAddOn from "@/types/MenuItemAddOn";
+
 
 const stripe = require('stripe')("sk_test_51R6PlkKi2RijjSjAximDaz2E5IN3lHaL3NHHpgd1G1mMS4Ded97vdlQV9tc7KIIPyffbY51mkV0Re417aKSM0fQ600cFALK8VV");
 
@@ -20,6 +22,16 @@ export async function POST(req: NextRequest) {
     paid: false
   })
 
+  if (userEmail) {
+    await Notification.create({
+      userEmail,
+      title: 'Order Created!',
+      body: `Your order #${order._id.toString()} has been successfully created.`,
+      icon: '/images/mogameat-logo.png', // Adjust path to your logo
+      createdAt: new Date(),
+      read: false
+    });
+  }
   const stripeLineItems: any = [];
 
   for (const cartProduct of cartProducts) {

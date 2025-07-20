@@ -33,7 +33,7 @@ export async function PUT(req: NextRequest) {
 
 export async function GET() {
   mongoose.connect("mongodb://siteAdmin:admin123Db@52.200.4.201:27017/mogameat?authSource=admin");
-  const menuItems = await MenuItem.find({ category: { $ne: null } });
+  const menuItems = await MenuItem.find({ rawmeatcategory: { $ne: null } });
   return NextResponse.json(menuItems);
 }
 

@@ -1,5 +1,11 @@
 "use client";
-import { CartIcon } from "@/icons/CartIcon";
+import { ChevronDownIcon } from "@/icons/ChevronDownIcon";
+import { MenuIcon } from "@/icons/MenuIcon";
+import { ShoppingBagIcon } from "@/icons/ShoppingBagIcon";
+import { SignOutIcon } from "@/icons/SignOutIcon";
+import { TagIcon } from "@/icons/TagIcon";
+import { UserIcon } from "@/icons/UserIcon";
+import { UsersIcon } from "@/icons/UsersIcon";
 import {
   Avatar,
   Button,
@@ -13,20 +19,13 @@ import {
   NavbarItem,
 } from "@nextui-org/react";
 import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
-import React, { useContext, useState } from "react";
-import { ChevronDownIcon } from "@/icons/ChevronDownIcon";
-import { UserIcon } from "@/icons/UserIcon";
-import { TagIcon } from "@/icons/TagIcon";
-import { UsersIcon } from "@/icons/UsersIcon";
-import { ShoppingBagIcon } from "@/icons/ShoppingBagIcon";
-import { MenuIcon } from "@/icons/MenuIcon";
-import { SignOutIcon } from "@/icons/SignOutIcon";
 import { usePathname } from "next/navigation";
+import { useContext, useState } from "react";
+import mogameatlogo from "../../assets/Moga_Meats.png";
 import { CartContext } from "../../util/ContextProvider";
 import { useProfile } from "../hooks/useProfile";
-import Image from "next/image";
-import mogameatlogo from "../../assets/Moga_Meats.png";
 
 const Header = () => {
   const { data: session } = useSession();
@@ -172,6 +171,14 @@ const Header = () => {
                 >
                   Categories
                 </DropdownItem>
+                 <DropdownItem
+                  className={profileData.isAdmin ? "" : "hidden"}
+                  key="rawmeatcategories"
+                  href="/rawmeatcategories"
+                  startContent={<TagIcon className="w-6" />}
+                >
+                  Raw Categories
+                </DropdownItem>
                 <DropdownItem
                   className={profileData.isAdmin ? "" : "hidden"}
                   key="menu-items"
@@ -179,6 +186,14 @@ const Header = () => {
                   startContent={<MenuIcon className="w-6" />}
                 >
                   Menu Items
+                </DropdownItem>
+                <DropdownItem
+                  className={profileData.isAdmin ? "" : "hidden"}
+                  key="menu-raw-items"
+                  href="/menu-raw-items"
+                  startContent={<MenuIcon className="w-6" />}
+                >
+                  Raw Meat Menu Items
                 </DropdownItem>
                 <DropdownItem
                   className={profileData.isAdmin ? "" : "hidden"}

@@ -5,7 +5,8 @@ type MenuItem = {
   name: string;
   image: string;
   description: string;
-  category: string;
+  category: string | null;
+  rawmeatcategory: string | null;
   basePrice: string | number;
   sizes: MenuItemAddOn[];
   extraIngredientsPrices: MenuItemAddOn[];

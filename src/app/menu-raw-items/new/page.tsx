@@ -32,7 +32,7 @@ const NewMenuItemPage = () => {
     event.preventDefault();
 
     const creationPromise = new Promise(async (resolve, reject) => {
-      const response = await fetch("/api/menu-items", {
+      const response = await fetch("/api/menu-raw-items", {
         method: "POST",
         body: JSON.stringify({
           name: data.name,
@@ -59,6 +59,7 @@ const NewMenuItemPage = () => {
       success: "Item created!",
       error: "Error creating item"
     });
+
     if(data.rawmeatcategory){
       router.push('/menu-raw-items')
     }else{
@@ -72,7 +73,7 @@ const NewMenuItemPage = () => {
         <>
           <UserTabs admin={profileData.isAdmin} />
           <Breadcrumbs size='lg' className="mt-12">
-            <BreadcrumbItem href='/menu-items'>Menu Items</BreadcrumbItem>
+            <BreadcrumbItem href='/menu-raw-items'>Raw Meat Menu Items</BreadcrumbItem>
             <BreadcrumbItem>Create New </BreadcrumbItem>
           </Breadcrumbs>
           <div className="max-w-4xl mx-auto mt-12">
