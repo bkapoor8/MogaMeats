@@ -6,9 +6,10 @@ import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "../auth/[...nextauth]/route";
+require('dotenv').config();
 
 
-const stripe = require('stripe')("sk_test_51R6PlkKi2RijjSjAximDaz2E5IN3lHaL3NHHpgd1G1mMS4Ded97vdlQV9tc7KIIPyffbY51mkV0Re417aKSM0fQ600cFALK8VV");
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req: NextRequest) {
   mongoose.connect("mongodb://siteAdmin:admin123Db@52.200.4.201:27017/mogameat?authSource=admin")
