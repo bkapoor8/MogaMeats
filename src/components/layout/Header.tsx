@@ -220,7 +220,9 @@ const Header = () => {
               ) : ( */}
                 {notifications.map((notification) => (
                   <DropdownItem key={notification?._id} className="py-2 hover:bg-gray-700">
-                    <Link href={`/orders/${notification?.body.match(/#([a-f0-9]+)/)[1]}`}>
+                    <Link href={`/orders/${
+                        notification?.body.match(/#([a-f0-9]+)/)?.[1] ?? ""
+                      }`}>
                       <div className="flex flex-col">
                         <span>{notification?.title}</span>
                         <span>{notification?.body}</span>
