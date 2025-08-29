@@ -211,7 +211,7 @@ const Header = () => {
                   No notifications
                 </DropdownItem>
               ) : ( */}
-                {notifications.map((notification) => (
+                {/* {notifications.map((notification) => (
                   <DropdownItem className="py-2 hover:bg-gray-700">
                     <Link href={`/orders/${notification?.body.match(/#([a-f0-9]+)/)[1]}`}>
                       <div className="flex flex-col">
@@ -224,7 +224,7 @@ const Header = () => {
                     </Link>
                   </DropdownItem>
                 // ))
-              ))}
+              ))} */}
               {/* <DropdownItem
                 ref={loaderRef}
                 key="loader"
