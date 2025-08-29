@@ -12,7 +12,12 @@ export async function GET(req: NextRequest) {
   if (!userEmail) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  let notifications;
+  if(authSession?.user?.isAdmin){
+       notifications = await Notification.find();
+  }else{
+     notifications = await Notification.find({ email: userEmail });
+  }
 
-  const notifications = await Notification.find({ userEmail }).sort({ createdAt: -1 });
   return NextResponse.json(notifications);
 }

@@ -1,4 +1,5 @@
 "use client";
+import { BellIcon } from "@/icons/BellIcon";
 import { ChevronDownIcon } from "@/icons/ChevronDownIcon";
 import { MenuIcon } from "@/icons/MenuIcon";
 import { ShoppingBagIcon } from "@/icons/ShoppingBagIcon";
@@ -21,8 +22,8 @@ import {
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useContext, useState } from "react";
+import { usePathname } from 'next/navigation';
+import { useContext, useEffect, useRef, useState } from "react";
 import mogameatlogo from "../../assets/Moga_Meats.png";
 import { CartContext } from "../../util/ContextProvider";
 import { useProfile } from "../hooks/useProfile";
@@ -33,13 +34,76 @@ const Header = () => {
   const pathname = usePathname();
   const { data: profileData } = useProfile();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const loaderRef = useRef(null);
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
 
+  // Function to fetch notifications (replace with actual API call)
+  const fetchNotifications = async (pageNum =1) => {
+    try {
+      setIsLoading(true);
+      fetch('/api/notification')
+        .then(res => res.json())
+        .then(data => {
+          setNotifications(data);
+        });
+      if (notifications.length === 0 || pageNum >= 3) {
+        setHasMore(false);
+        return;
+      }
+
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  // Reset notifications when user changes
+  useEffect(() => {
+    setNotifications([]);
+    setPage(1);
+    setHasMore(true);
+  }, [profileData]);
+
+  // Fetch notifications when page or profileData changes
+  useEffect(() => {
+    if (profileData && hasMore && !isLoading) {
+      fetchNotifications(1);
+    }
+  }, [profileData, page]);
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isLoading) {
+          setPage((prev) => prev + 1);
+        }
+      },
+      { threshold: 0.1 } // Lower threshold for better UX
+    );
+
+    const currentLoader = loaderRef.current;
+    if (currentLoader) {
+      observer.observe(currentLoader);
+    }
+
+    return () => {
+      if (currentLoader) {
+        observer.unobserve(currentLoader);
+      }
+    };
+  }, [hasMore, isLoading]);
+
+  
   return (
-    <Navbar className="font-semibold bg-dark py-3 lg:px-8 ">
+    <Navbar className="font-semibold bg-dark py-3 lg:px-8">
       <NavbarBrand>
         <Link href="/">
           <Image
@@ -62,13 +126,10 @@ const Header = () => {
       {/* Sidebar for Mobile */}
       {isSidebarOpen && (
         <>
-          {/* Full Black Background */}
           <div
             className="fixed inset-0 bg-black z-40"
             onClick={toggleSidebar}
           ></div>
-
-          {/* Sidebar */}
           <div className="fixed top-0 left-0 bg-black z-50 pt-12 pb-12 pl-12 pr-44 shadow-lg">
             <button
               className="absolute top-4 right-4 text-white"
@@ -126,8 +187,55 @@ const Header = () => {
         </NavbarItem>
       </NavbarContent>
 
-      {/* User Profile Section */}
+      {/* User Profile and Notifications Section */}
       <NavbarContent justify="end">
+        {profileData && (
+          <Dropdown className="text-gray-300 bg-dark rounded-lg">
+            <DropdownTrigger>
+              <Button isIconOnly className="bg-transparent relative">
+                <BellIcon className="w-6 stroke-white" />
+                {notifications.length > 0 && (
+                  <span className="w-4 h-4 rounded-full bg-primary text-dark text-xs absolute right-0 top-0 flex items-center justify-center">
+                    {notifications.length}
+                  </span>
+                )}
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              aria-label="Notifications Menu"
+              color="default"
+              className="max-h-[300px] overflow-y-auto w-64 p-2 bg-dark text-gray-300 rounded-lg"
+            >
+              {/* {notifications.length === 0 && !isLoading ? (
+                <DropdownItem key="no-notifications" className="text-gray-300 text-center">
+                  No notifications
+                </DropdownItem>
+              ) : ( */}
+                {notifications.map((notification) => (
+                  <DropdownItem key={notification?._id} className="py-2 hover:bg-gray-700">
+                    <Link href={`/orders/${notification?.body.match(/#([a-f0-9]+)/)[1]}`}>
+                      <div className="flex flex-col">
+                        <span>{notification?.title}</span>
+                        <span>{notification?.body}</span>
+                        <span className="text-xs text-gray-400">
+                          {new Date(notification?.createdAt).toLocaleString()}
+                        </span>
+                      </div>
+                    </Link>
+                  </DropdownItem>
+                // ))
+              ))}
+              {/* <DropdownItem
+                ref={loaderRef}
+                key="loader"
+                className="text-center text-gray-300"
+              >
+                <div>{isLoading ? "Loading..." : "Scroll to load more"}</div>
+              </DropdownItem> */}
+            </DropdownMenu>
+          </Dropdown>
+        )}
+
         {profileData ? (
           <div className="flex items-center">
             <Dropdown className="text-gray-300">
@@ -142,9 +250,7 @@ const Header = () => {
                       size="sm"
                     />
                   }
-                  endContent={
-                    <ChevronDownIcon className="w-4 stroke-white" />
-                  }
+                  endContent={<ChevronDownIcon className="w-4 stroke-white" />}
                   disableAnimation
                 />
               </DropdownTrigger>
@@ -171,7 +277,7 @@ const Header = () => {
                 >
                   Categories
                 </DropdownItem>
-                 <DropdownItem
+                <DropdownItem
                   className={profileData.isAdmin ? "" : "hidden"}
                   key="rawmeatcategories"
                   href="/rawmeatcategories"
@@ -204,7 +310,6 @@ const Header = () => {
                   Users
                 </DropdownItem>
                 <DropdownItem
-                  // className={profileData.isAdmin ? "" : "hidden"}
                   key="carts"
                   href="/cart"
                   startContent={<UsersIcon className="w-6" />}
@@ -227,28 +332,30 @@ const Header = () => {
             </Dropdown>
           </div>
         ) : (
-          <>
-            <div className="flex items-center">
-              <Dropdown className="text-gray-300">
-                <DropdownTrigger>
-                  <Button
-                    className="bg-transparent h-full"
-                    startContent={<UsersIcon className="w-6" />}
-                    endContent={<ChevronDownIcon className="w-4 stroke-white" />}
-                    disableAnimation
-                  />
-                </DropdownTrigger>
-                <DropdownMenu aria-label="User Menu" color="primary">
-                  <DropdownItem key="login" href="/login">
-                    Login
-                  </DropdownItem>
-                  <DropdownItem key="register" href="/register">
-                    SignUp
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            </div>
-          </>
+        //   <Button href="/login" className="bg-primary text-white">
+        //     Log In
+        //   </Button>
+        // // )}
+        <div className="flex items-center">
+          <Dropdown className="text-gray-300">
+            <DropdownTrigger>
+              <Button
+                className="bg-transparent h-full"
+                startContent={<UsersIcon className="w-6" />}
+                endContent={<ChevronDownIcon className="w-4 stroke-white" />}
+                disableAnimation
+              />
+            </DropdownTrigger>
+            <DropdownMenu aria-label="User Menu" color="primary">
+              <DropdownItem key="login" href="/login">
+                Login
+              </DropdownItem>
+              <DropdownItem key="register" href="/register">
+                SignUp
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </div>
         )}
       </NavbarContent>
     </Navbar>

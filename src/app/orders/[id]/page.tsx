@@ -2,13 +2,13 @@
 import AddressInputs from "@/components/common/form/AddressInputs";
 import CartProduct from "@/components/features/cart/CartProduct";
 import OrderSummary from "@/components/features/cart/OrderSummary";
-import { CartContext, calCartProductPrice } from "@/util/ContextProvider";
 import { TickIcon } from "@/icons/TickIcon";
+import { ICartProduct } from "@/types/CartProduct";
 import Order from "@/types/Order";
+import { CartContext, calCartProductPrice } from "@/util/ContextProvider";
 import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/react";
 import { useParams } from "next/navigation";
-import React, { useContext, useEffect, useState } from "react";
-import { ICartProduct } from "@/types/CartProduct";
+import { useContext, useEffect, useState } from "react";
 
 const OrderPage = () => {
   const { id } = useParams();
@@ -72,6 +72,7 @@ const OrderPage = () => {
                 orderId={order._id}
                 subtotal={subtotal}
                 deviveryFee={5}
+                taxes={13}
                 discount={0}
                 paid={order.paid}
               />

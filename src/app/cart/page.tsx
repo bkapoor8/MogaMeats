@@ -3,19 +3,19 @@ import AddressInputs from '@/components/common/form/AddressInputs'
 import CartProduct from '@/components/features/cart/CartProduct'
 import OrderSummary from '@/components/features/cart/OrderSummary'
 import { useProfile } from '@/components/hooks/useProfile'
-import { CartContext, calCartProductPrice } from '@/util/ContextProvider'
 import { ChevronLeftIcon } from '@/icons/ChevronLeftIcon'
+import { CartContext, calCartProductPrice } from '@/util/ContextProvider'
+import { getDistance } from "@/util/Distance"
 import { Button, Link } from '@nextui-org/react'
-import React, { FormEvent, useContext, useEffect, useState } from 'react'
+import { FormEvent, useContext, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-// import  CloverPayWidget  from "../../components/layout/CloverPayWidget"
-
 
 const CartPage = () => {
   const { cartProducts, removeCartProduct } = useContext(CartContext);
-  const [address, setAddress] = useState({});
+  const [address, setAddress] = useState<any>({});
   const { data: profileData } = useProfile();
   const [payNow, setPayNow] = useState(false);
+  const [distance, setDistance] = useState<number | null>(null);
 
   useEffect(() => {
     if (profileData) {
@@ -37,29 +37,49 @@ const CartPage = () => {
     subtotal += calCartProductPrice(cartProduct) as number;
   });
 
-  function handleAddressChange(propName: string, value: string): void {
-    setAddress(prevAddress => ({ ...prevAddress, [propName]: value }));
+  // ✅ FIXED: getDistance returns object -> we only store distanceValue
+  async function handleAddressChange(propName: string, value: string): Promise<void> {
+    const updated = { ...address, [propName]: value };
+    setAddress(updated);
+
+    const origin = updated.streetAddress;
+    const destination = updated.city || value;
+
+    if (origin && destination) {
+      try {
+        const result = await getDistance(String(origin), String(destination));
+
+        if (result) {
+          setDistance(result.distanceValue); // store km
+          console.log("Distance:", result.distanceText, result.distanceValue);
+        } else {
+          setDistance(null);
+        }
+      } catch (error) {
+        console.error("Error getting distance:", error);
+        setDistance(null);
+      }
+    }
   }
 
   async function proceedToCheckOut(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
 
-    const promise = new Promise<void>((resolve, reject) => {
-      fetch('/api/checkout', {
-        method: 'POST',
+    const orderPromise = new Promise(async (resolve, reject) => {
+      const response = await fetch(`/api/checkout`, {
+        method: "POST",
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address, cartProducts }),
+        body: JSON.stringify({ address, cartProducts ,deliveryFee}),
       }).then(async response => {
         if (response.ok) {
-          resolve();
           window.location = await response.json();
         } else {
           reject();
         }
       });
-    });
+    })
 
-    await toast.promise(promise, {
+    await toast.promise(orderPromise, {
       loading: 'Preparing your order...',
       success: 'Redirecting to payment...',
       error: 'Something went wrong, please try again later.'
@@ -79,6 +99,9 @@ const CartPage = () => {
     )
   }
 
+  // ✅ Delivery fee: dynamic if distance exists, else fallback 5
+  const deliveryFee = distance ? Math.round(distance * 0.5) : 5;
+
   return (
     <section className='pt-6 pb-12 sm:pt-10 sm:pb-20 max-w-6xl mx-auto px-4'>
       <Link href={'/menu'} className='text-primary font-semibold inline-flex items-center'>
@@ -91,12 +114,22 @@ const CartPage = () => {
             <h2 className='border-b-1 font-semibold py-3 text-primary'>Cart</h2>
             <div className='space-y-4 mt-4'>
               {cartProducts && cartProducts.map((product, index) => (
-                <CartProduct key={index} product={product}
-                onRemove={() => removeCartProduct(index)} productPrice={calCartProductPrice(product)} />
+                <CartProduct 
+                  key={index} 
+                  product={product}
+                  onRemove={() => removeCartProduct(index)} 
+                  productPrice={calCartProductPrice(product)} 
+                />
               ))}
             </div>
             <div className='mt-8'>
-              <OrderSummary subtotal={subtotal} deviveryFee={5} discount={0} paid={false} />
+              <OrderSummary 
+                subtotal={subtotal} 
+                deviveryFee={deliveryFee} 
+                discount={0} 
+                taxes={13} 
+                paid={false} 
+              />
             </div>
           </div>
           <div className='lg:col-span-2'>
@@ -108,19 +141,18 @@ const CartPage = () => {
                 <div>
                   <AddressInputs
                     addressProps={address}
-                    setAddressProps={(propName: string, value: string) => handleAddressChange(propName, value)} disabled={false} />
+                    setAddressProps={(propName: string, value: string) => handleAddressChange(propName, value)} 
+                    disabled={false} 
+                  />
                 </div>
-                {/* <Button type='submit' color='primary' fullWidth>Pay {(subtotal + 5).toFixed(2)}$</Button> */}
                 <Button 
                   type="submit" 
                   color="primary" 
                   fullWidth 
                   onClick={() => setPayNow(true)}
                 >
-                  Pay {(subtotal + 5).toFixed(2)}$
+                  Pay {(subtotal + deliveryFee + subtotal*0.13).toFixed(2)}$
                 </Button>
-
-                {/* {subtotal && <CloverPayWidget amount={parseFloat((subtotal + 5).toFixed(2))} />} */}
               </form>
             </div>
           </div>
@@ -131,4 +163,3 @@ const CartPage = () => {
 }
 
 export default CartPage
-
