@@ -28,13 +28,20 @@ import mogameatlogo from "../../assets/Moga_Meats.png";
 import { CartContext } from "../../util/ContextProvider";
 import { useProfile } from "../hooks/useProfile";
 
+interface Notification {
+  _id: string;
+  title: string;
+  body: string;
+  createdAt: string;
+}
+
 const Header = () => {
   const { data: session } = useSession();
   const { cartProducts } = useContext(CartContext);
   const pathname = usePathname();
   const { data: profileData } = useProfile();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
