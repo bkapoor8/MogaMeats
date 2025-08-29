@@ -1,1 +1,1 @@
-export const STRIPE_SECRET_KEY = "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";
+// export const STRIPE_SECRET_KEY = "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";
