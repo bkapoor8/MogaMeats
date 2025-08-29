@@ -6,12 +6,11 @@ import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { STRIPE_SECRET_KEY } from "../../../util/constant";
 import { authOptions } from "../auth/[...nextauth]/route";
 
 // require("dotenv").config();
 
-const stripe = require('stripe')(STRIPE_SECRET_KEY);
+const stripe = require('stripe')('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');
 // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req: NextRequest) {
