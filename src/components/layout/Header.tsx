@@ -189,7 +189,7 @@ const Header = () => {
 
       {/* User Profile and Notifications Section */}
       <NavbarContent justify="end">
-        {profileData && (
+        {notifications && (
           <Dropdown className="text-gray-300 bg-dark rounded-lg">
             <DropdownTrigger>
               <Button isIconOnly className="bg-transparent relative">
@@ -211,8 +211,8 @@ const Header = () => {
                   No notifications
                 </DropdownItem>
               ) : ( */}
-                {/* {notifications.map((notification) => (
-                  <DropdownItem className="py-2 hover:bg-gray-700">
+                {notifications.map((notification) => (
+                  <DropdownItem key={notification?._id} className="py-2 hover:bg-gray-700">
                     <Link href={`/orders/${notification?.body.match(/#([a-f0-9]+)/)[1]}`}>
                       <div className="flex flex-col">
                         <span>{notification?.title}</span>
@@ -224,7 +224,7 @@ const Header = () => {
                     </Link>
                   </DropdownItem>
                 // ))
-              ))} */}
+              ))}
               {/* <DropdownItem
                 ref={loaderRef}
                 key="loader"
