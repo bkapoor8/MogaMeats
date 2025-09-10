@@ -42,9 +42,10 @@ const CartPage = () => {
     const updated = { ...address, [propName]: value };
     setAddress(updated);
 
-    const origin = updated.streetAddress;
-    const destination = updated.city || value;
+    const origin = "1560 Dundas St.London Ontario";
+    const destination = updated.streetAddress + ' ' +updated.city || value;
 
+    console.log('efwwe',value)
     if (origin && destination) {
       try {
         const result = await getDistance(String(origin), String(destination));
@@ -100,7 +101,7 @@ const CartPage = () => {
   }
 
   // ✅ Delivery fee: dynamic if distance exists, else fallback 5
-  const deliveryFee = distance ? Math.round(distance * 0.5) : 5;
+  const deliveryFee = distance ? Math.round(distance * 0.5) : 0;
 
   return (
     <section className='pt-6 pb-12 sm:pt-10 sm:pb-20 max-w-6xl mx-auto px-4'>

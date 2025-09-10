@@ -5,7 +5,7 @@ import MenuItemCard from '@/components/features/menuItems/MenuItemCard';
 import SectionHeader from '@/components/layout/SectionHeader';
 import Category from '@/types/Category';
 import MenuItem from '@/types/MenuItem';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const MenuPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
