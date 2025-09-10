@@ -72,6 +72,7 @@ const OrderPage = () => {
                 orderId={order._id}
                 subtotal={subtotal}
                 deviveryFee={5}
+                serviceCharge={0}  
                 taxes={13}
                 discount={0}
                 paid={order.paid}

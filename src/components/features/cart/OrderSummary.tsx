@@ -2,11 +2,10 @@ interface OrderSummaryProps {
   orderId?: string;
   subtotal: number;
   deviveryFee: number; // keeping your original prop name
+  serviceCharge: number; // ✅ new line item
   discount: number;
   taxes: number; // percentage, e.g. 13 = 13%
   paid: boolean;
-  // new optional prop: if true, tax is applied to (subtotal + deliveryFee - discount)
-  // if false (default) tax is applied to subtotal - discount
   taxesApplyToDelivery?: boolean;
 }
 
@@ -14,6 +13,7 @@ const OrderSummary = ({
   orderId,
   subtotal,
   deviveryFee,
+  serviceCharge,
   discount,
   taxes,
   paid,
@@ -22,11 +22,17 @@ const OrderSummary = ({
 
   const round2 = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
 
-  // choose which parts are taxable
-  const taxableBase = subtotal + (taxesApplyToDelivery ? deviveryFee : 0) - discount;
-  const taxAmount = round2((Math.max(taxableBase, 0) * taxes) / 100);
-  const total = round2(taxableBase + taxAmount);
+  // ✅ taxable base should include delivery fee + service charge if flagged
+  const taxableBase = subtotal 
+    + (taxesApplyToDelivery ? (deviveryFee + serviceCharge) : 0) 
+    - discount;
 
+  const taxAmount = round2((Math.max(taxableBase, 0) * taxes) / 100);
+
+  // ✅ final total = everything
+  const total = round2(
+    subtotal + deviveryFee + serviceCharge - discount + taxAmount
+  );
 
   return (
     <>
@@ -39,8 +45,15 @@ const OrderSummary = ({
 
       <div className="grid grid-cols-8 pt-1">
         <div className="pl-4 col-span-7 flex justify-between text-gray-400">
-          <span>Delivery fee</span>
-          <span>{deviveryFee}$</span>
+          <span>Delivery Fee</span>
+          <span>{deviveryFee.toFixed(2)}$</span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-8 pt-1">
+        <div className="pl-4 col-span-7 flex justify-between text-gray-400">
+          <span>Service Charge</span>
+          <span>{serviceCharge.toFixed(2)}$</span>
         </div>
       </div>
 
@@ -58,12 +71,12 @@ const OrderSummary = ({
         </div>
       </div>
 
-      {/* <div className="grid grid-cols-8 pt-2">
+      <div className="grid grid-cols-8 pt-2">
         <div className="pl-4 col-span-7 flex justify-between font-semibold">
           <span>Total</span>
           <span>{total.toFixed(2)}$</span>
         </div>
-      </div> */}
+      </div>
 
       {orderId && (
         <div className="grid grid-cols-8 pt-1">

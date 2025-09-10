@@ -16,13 +16,15 @@ const CartPage = () => {
   const { data: profileData } = useProfile();
   const [payNow, setPayNow] = useState(false);
   const [distance, setDistance] = useState<number | null>(null);
+  const [deliveryFee, setDeliveryFee] = useState<number | null>(null);
+  const [serviceCharge, setServiceCharge] = useState<number | null>(null);
 
   useEffect(() => {
     if (profileData) {
       const { phone, streetAddress, city, state, country, postalCode } = profileData;
       setAddress({ phone, streetAddress, city, state, country, postalCode });
     }
-  }, [profileData])
+  }, [profileData]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -30,47 +32,66 @@ const CartPage = () => {
         toast.error('Payment failed 🙁')
       }
     }
-  }, [])
+  }, []);
 
   let subtotal = 0;
   cartProducts.forEach(cartProduct => {
     subtotal += calCartProductPrice(cartProduct) as number;
   });
 
-  // ✅ FIXED: getDistance returns object -> we only store distanceValue
-  async function handleAddressChange(propName: string, value: string): Promise<void> {
-    const updated = { ...address, [propName]: value };
-    setAddress(updated);
+  // ✅ update address + recalc delivery distance/fee
+ async function handleAddressChange(propName: string, value: string): Promise<void> {
+  const updated = { ...address, [propName]: value };
+  setAddress(updated);
 
-    const origin = "1560 Dundas St.London Ontario";
-    const destination = updated.streetAddress + ' ' +updated.city || value;
+  const origin = "1560 Dundas St. London Ontario";
+  const destination = `${updated.streetAddress || ""} ${updated.city || ""}`.trim();
 
-    console.log('efwwe',value)
-    if (origin && destination) {
-      try {
-        const result = await getDistance(String(origin), String(destination));
+  if (origin && destination) {
+    try {
+      const result = await getDistance(String(origin), String(destination));
 
-        if (result) {
-          setDistance(result.distanceValue); // store km
-          console.log("Distance:", result.distanceText, result.distanceValue);
-        } else {
-          setDistance(null);
-        }
-      } catch (error) {
-        console.error("Error getting distance:", error);
+      if (result) {
+        setDistance(result.distanceValue);
+        setDeliveryFee(result.price);           // ✅ Delivery fee
+        setServiceCharge(result.serviceCharge); // ✅ Service charge
+        console.log(
+          "Distance:",
+          result.distanceText,
+          result.distanceValue,
+          "Price:",
+          result.price,
+          "Service Charge:",
+          result.serviceCharge
+        );
+      } else {
         setDistance(null);
+        setDeliveryFee(null);
+        setServiceCharge(null);
       }
+    } catch (error) {
+      console.error("Error getting distance:", error);
+      setDistance(null);
+      setDeliveryFee(null);
+      setServiceCharge(null);
     }
   }
+}
+
 
   async function proceedToCheckOut(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
+
+    if (deliveryFee === null) {
+      toast.error("Sorry, we don’t deliver to this address (beyond 20 km).");
+      return;
+    }
 
     const orderPromise = new Promise(async (resolve, reject) => {
       const response = await fetch(`/api/checkout`, {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address, cartProducts ,deliveryFee}),
+        body: JSON.stringify({ address, cartProducts, deliveryFee }),
       }).then(async response => {
         if (response.ok) {
           window.location = await response.json();
@@ -78,7 +99,7 @@ const CartPage = () => {
           reject();
         }
       });
-    })
+    });
 
     await toast.promise(orderPromise, {
       loading: 'Preparing your order...',
@@ -100,9 +121,6 @@ const CartPage = () => {
     )
   }
 
-  // ✅ Delivery fee: dynamic if distance exists, else fallback 5
-  const deliveryFee = distance ? Math.round(distance * 0.5) : 0;
-
   return (
     <section className='pt-6 pb-12 sm:pt-10 sm:pb-20 max-w-6xl mx-auto px-4'>
       <Link href={'/menu'} className='text-primary font-semibold inline-flex items-center'>
@@ -115,22 +133,24 @@ const CartPage = () => {
             <h2 className='border-b-1 font-semibold py-3 text-primary'>Cart</h2>
             <div className='space-y-4 mt-4'>
               {cartProducts && cartProducts.map((product, index) => (
-                <CartProduct 
-                  key={index} 
+                <CartProduct
+                  key={index}
                   product={product}
-                  onRemove={() => removeCartProduct(index)} 
-                  productPrice={calCartProductPrice(product)} 
+                  onRemove={() => removeCartProduct(index)}
+                  productPrice={calCartProductPrice(product)}
                 />
               ))}
             </div>
             <div className='mt-8'>
               <OrderSummary 
-                subtotal={subtotal} 
-                deviveryFee={deliveryFee} 
-                discount={0} 
-                taxes={13} 
-                paid={false} 
+                subtotal={subtotal}
+                deviveryFee={deliveryFee ?? 0}
+                serviceCharge={serviceCharge ?? 0}
+                discount={0}
+                taxes={13}
+                paid={false}
               />
+
             </div>
           </div>
           <div className='lg:col-span-2'>
@@ -142,18 +162,22 @@ const CartPage = () => {
                 <div>
                   <AddressInputs
                     addressProps={address}
-                    setAddressProps={(propName: string, value: string) => handleAddressChange(propName, value)} 
-                    disabled={false} 
+                    setAddressProps={(propName: string, value: string) => handleAddressChange(propName, value)}
+                    disabled={false}
                   />
                 </div>
-                <Button 
-                  type="submit" 
-                  color="primary" 
-                  fullWidth 
+                <Button
+                  type="submit"
+                  color="primary"
+                  fullWidth
                   onClick={() => setPayNow(true)}
+                  isDisabled={deliveryFee === null}
                 >
-                  Pay {(subtotal + deliveryFee + subtotal*0.13).toFixed(2)}$
+                  {deliveryFee === null
+                    ? "Out of delivery range"
+                    : `Pay ${(subtotal + (deliveryFee ?? 0) + (serviceCharge ?? 0) + subtotal * 0.13).toFixed(2)}$`}
                 </Button>
+
               </form>
             </div>
           </div>

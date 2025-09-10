@@ -10,7 +10,7 @@ import Stripe from "stripe";
 import { authOptions } from "../auth/[...nextauth]/route";
 
 require("dotenv").config();
-
+console.log('STRIPE_SECRET_KEY',process.env.STRIPE_SECRET_KEY);
 const stripe = require('stripe')("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");
 // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
