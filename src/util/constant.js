@@ -1,1 +1,1 @@
-export const STRIPE_SECRET_KEY = "";
+export const STRIPE_SECRET_KEY = "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";
