@@ -79,34 +79,42 @@ const CartPage = () => {
 }
 
 
-  async function proceedToCheckOut(event: FormEvent<HTMLFormElement>): Promise<void> {
-    event.preventDefault();
+ async function proceedToCheckOut(event: FormEvent<HTMLFormElement>): Promise<void> {
+  event.preventDefault();
 
-    if (deliveryFee === null) {
-      toast.error("Sorry, we don’t deliver to this address (beyond 20 km).");
-      return;
-    }
-
-    const orderPromise = new Promise(async (resolve, reject) => {
-      const response = await fetch(`/api/checkout`, {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address, cartProducts, deliveryFee }),
-      }).then(async response => {
-        if (response.ok) {
-          window.location = await response.json();
-        } else {
-          reject();
-        }
-      });
-    });
-
-    await toast.promise(orderPromise, {
-      loading: 'Preparing your order...',
-      success: 'Redirecting to payment...',
-      error: 'Something went wrong, please try again later.'
-    });
+  if (deliveryFee === null) {
+    toast.error("Sorry, we don’t deliver to this address (beyond 20 km).");
+    return;
   }
+
+  const orderPromise = new Promise(async (resolve, reject) => {
+    const response = await fetch(`/api/checkout`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        address,
+        cartProducts,
+        deliveryFee,
+        serviceCharge, // ✅ send serviceCharge as well
+      }),
+    }).then(async response => {
+      if (response.ok) {
+        const data = await response.json();
+        window.location.href = data.url; // ✅ proper redirect
+        resolve(true);
+      } else {
+        reject();
+      }
+    });
+  });
+
+  await toast.promise(orderPromise, {
+    loading: "Preparing your order...",
+    success: "Redirecting to payment...",
+    error: "Something went wrong, please try again later.",
+  });
+}
+
 
   if (cartProducts.length === 0) {
     return (

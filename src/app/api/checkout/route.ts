@@ -21,8 +21,8 @@ export async function POST(req: NextRequest) {
 
   const authSession = await getServerSession(authOptions);
   const userEmail = authSession?.user?.email;
-  const { cartProducts, address ,deliveryFee} = await req.json();
-  console.log(deliveryFee)
+  const { cartProducts, address, deliveryFee, serviceCharge } = await req.json();
+
   const order = await Order.create({
     userEmail,
     ...address,
@@ -41,11 +41,10 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // ✅ Type-safe line items
   const stripeLineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
   let totalAmount = 0;
 
-  var deliveryfee = deliveryFee; 
+  // ✅ Loop through products
   for (const cartProduct of cartProducts) {
     const menuItem = await MenuItem.findById(cartProduct.menuItem._id);
     let productPrice = menuItem.basePrice;
@@ -74,48 +73,47 @@ export async function POST(req: NextRequest) {
       quantity: 1,
       price_data: {
         currency: "AUD",
-        product_data: {
-          name: menuItem.name,
-        },
-        unit_amount: Math.round(productPrice * 100), // cents
+        product_data: { name: menuItem.name },
+        unit_amount: Math.round(productPrice * 100),
       },
     });
   }
 
-  // ✅ Add 13% tax
+  // ✅ Add Tax
   const taxAmount = totalAmount * 0.13;
   stripeLineItems.push({
     quantity: 1,
     price_data: {
       currency: "AUD",
-      product_data: {
-        name: "Tax (13%)",
-      },
+      product_data: { name: "Tax (13%)" },
       unit_amount: Math.round(taxAmount * 100),
     },
   });
 
-  const stripeSession = await stripe.checkout.sessions.create({
-    line_items: stripeLineItems,
-    mode: "payment",
-    success_url: `https://mogameatbarandgrill.com/orders/${order._id.toString()}?clear-cart=1`,
-    cancel_url: `https://mogameatbarandgrill.com/cart?canceled=1`,
-    customer_email: userEmail || undefined,
-    payment_method_types: ["card"],
-    metadata: { orderId: order._id.toString() },
-    shipping_options: [
-      {
-        shipping_rate_data: {
-          display_name: "Delivery fee",
-          type: "fixed_amount",
-          fixed_amount: {
-            amount: deliveryfee*100, // cents
-            currency: "AUD",
-          },
+  // ✅ Stripe Session
+ const stripeSession = await stripe.checkout.sessions.create({
+  line_items: stripeLineItems,
+  mode: "payment",
+  success_url: `https://mogameatbarandgrill.com/orders/${order._id.toString()}?clear-cart=1`,
+  cancel_url: `https://mogameatbarandgrill.com/cart?canceled=1`,
+  customer_email: userEmail || undefined,
+  payment_method_types: ["card"],
+  metadata: { orderId: order._id.toString() },
+  shipping_options: [
+    {
+      shipping_rate_data: {
+        display_name: "Delivery & Service Fee", // ✅ combined
+        type: "fixed_amount",
+        fixed_amount: {
+          amount: Math.round(((deliveryFee || 0) + (serviceCharge || 0)) * 100), // ✅ safe sum
+          currency: "AUD",
         },
       },
-    ],
-  });
+    },
+  ],
+});
 
-  return NextResponse.json(stripeSession.url);
+
+  // ✅ Return JSON instead of redirect
+  return NextResponse.json({ url: stripeSession.url });
 }
