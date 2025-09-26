@@ -12,7 +12,7 @@ import { authOptions } from "../auth/[...nextauth]/route";
 require("dotenv").config();
 
 // const stripe = require('stripe')(STRIPE_SECRET_KEY);
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const stripe = require('stripe')('process.env.STRIPE_SECRET_KEY');
 
 export async function POST(req: NextRequest) {
   await mongoose.connect(
@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
   line_items: stripeLineItems,
   mode: "payment",
   success_url: `https://mogameatbarandgrill.com/orders/${order._id.toString()}?clear-cart=1`,
-  cancel_url: `https://mogameatbarandgrill.com/cart?canceled=1`,
+  cancel_url: `https://mogameatbarandgrill.com/orders/${order._id.toString()}?clear-cart=0`,
   customer_email: userEmail || undefined,
   payment_method_types: ["card"],
   metadata: { orderId: order._id.toString() },

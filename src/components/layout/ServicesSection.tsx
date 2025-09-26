@@ -1,6 +1,5 @@
 'use client'
 import { DietFoodIcon } from '@/icons/DietFoodIcon'
-import { PizzaIcon } from '@/icons/PizzaIcon'
 import { ScooterIcon } from '@/icons/ScooterIcon'
 import { SectionProps } from '@/types/SectionProps'
 import { motion } from "framer-motion"

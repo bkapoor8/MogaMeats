@@ -13,11 +13,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   let notifications;
-  if(authSession?.user?.isAdmin){
        notifications = await Notification.find();
-  }else{
-     notifications = await Notification.find({ email: userEmail });
-  }
+  
 
   return NextResponse.json(notifications);
 }

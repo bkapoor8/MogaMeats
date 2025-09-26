@@ -46,31 +46,29 @@ const Header = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const loaderRef = useRef(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null); // Ref for audio element
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
 
-  // Function to fetch notifications (replace with actual API call)
-  const fetchNotifications = async (pageNum =1) => {
+  // Function to fetch notifications
+  const fetchNotifications = async (pageNum = 1) => {
     try {
       setIsLoading(true);
-      fetch('/api/notification')
-        .then(res => res.json())
-        .then(data => {
-          setNotifications(data);
-        });
-      if (notifications.length === 0 || pageNum >= 3) {
+      const res = await fetch('/api/notification');
+      const data = await res.json();
+      setNotifications(data);
+      if (data.length === 0 || pageNum >= 3) {
         setHasMore(false);
-        return;
       }
-
     } catch (error) {
       console.error("Error fetching notifications:", error);
     } finally {
       setIsLoading(false);
     }
   };
+
   // Reset notifications when user changes
   useEffect(() => {
     setNotifications([]);
@@ -81,9 +79,21 @@ const Header = () => {
   // Fetch notifications when page or profileData changes
   useEffect(() => {
     if (profileData && hasMore && !isLoading) {
-      fetchNotifications(1);
+      fetchNotifications(page);
     }
   }, [profileData, page]);
+
+  // Play sound for admin when new notifications are received
+  useEffect(() => {
+    if (profileData?.isAdmin && notifications.length > 0) {
+      // Play sound only if admin and new notifications exist
+      const audio = new Audio('/notification.mp3'); // Path to your audio file
+      audio.play().catch((error) => {
+        console.error("Error playing notification sound:", error);
+      });
+      audioRef.current = audio; // Store audio in ref
+    }
+  }, [notifications, profileData]);
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
@@ -93,7 +103,7 @@ const Header = () => {
           setPage((prev) => prev + 1);
         }
       },
-      { threshold: 0.1 } // Lower threshold for better UX
+      { threshold: 0.1 }
     );
 
     const currentLoader = loaderRef.current;
@@ -108,7 +118,6 @@ const Header = () => {
     };
   }, [hasMore, isLoading]);
 
-  
   return (
     <Navbar className="font-semibold bg-dark py-3 lg:px-8">
       <NavbarBrand>
@@ -213,34 +222,28 @@ const Header = () => {
               color="default"
               className="max-h-[300px] overflow-y-auto w-64 p-2 bg-dark text-gray-300 rounded-lg"
             >
-              {/* {notifications.length === 0 && !isLoading ? (
-                <DropdownItem key="no-notifications" className="text-gray-300 text-center">
-                  No notifications
+              {notifications.map((notification) => (
+                <DropdownItem key={notification?._id} className="py-2 hover:bg-gray-700">
+                  <Link href={`/orders/${
+                      notification?.body.match(/#([a-f0-9]+)/)?.[1] ?? ""
+                    }`}>
+                    <div className="flex flex-col">
+                      <span>{notification?.title}</span>
+                      <span>{notification?.body}</span>
+                      <span className="text-xs text-gray-400">
+                        {new Date(notification?.createdAt).toLocaleString()}
+                      </span>
+                    </div>
+                  </Link>
                 </DropdownItem>
-              ) : ( */}
-                {notifications.map((notification) => (
-                  <DropdownItem key={notification?._id} className="py-2 hover:bg-gray-700">
-                    <Link href={`/orders/${
-                        notification?.body.match(/#([a-f0-9]+)/)?.[1] ?? ""
-                      }`}>
-                      <div className="flex flex-col">
-                        <span>{notification?.title}</span>
-                        <span>{notification?.body}</span>
-                        <span className="text-xs text-gray-400">
-                          {new Date(notification?.createdAt).toLocaleString()}
-                        </span>
-                      </div>
-                    </Link>
-                  </DropdownItem>
-                // ))
               ))}
-              {/* <DropdownItem
+              <DropdownItem
                 ref={loaderRef}
                 key="loader"
                 className="text-center text-gray-300"
               >
                 <div>{isLoading ? "Loading..." : "Scroll to load more"}</div>
-              </DropdownItem> */}
+              </DropdownItem>
             </DropdownMenu>
           </Dropdown>
         )}
@@ -341,30 +344,26 @@ const Header = () => {
             </Dropdown>
           </div>
         ) : (
-        //   <Button href="/login" className="bg-primary text-white">
-        //     Log In
-        //   </Button>
-        // // )}
-        <div className="flex items-center">
-          <Dropdown className="text-gray-300">
-            <DropdownTrigger>
-              <Button
-                className="bg-transparent h-full"
-                startContent={<UsersIcon className="w-6" />}
-                endContent={<ChevronDownIcon className="w-4 stroke-white" />}
-                disableAnimation
-              />
-            </DropdownTrigger>
-            <DropdownMenu aria-label="User Menu" color="primary">
-              <DropdownItem key="login" href="/login">
-                Login
-              </DropdownItem>
-              <DropdownItem key="register" href="/register">
-                SignUp
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        </div>
+          <div className="flex items-center">
+            <Dropdown className="text-gray-300">
+              <DropdownTrigger>
+                <Button
+                  className="bg-transparent h-full"
+                  startContent={<UsersIcon className="w-6" />}
+                  endContent={<ChevronDownIcon className="w-4 stroke-white" />}
+                  disableAnimation
+                />
+              </DropdownTrigger>
+              <DropdownMenu aria-label="User Menu" color="primary">
+                <DropdownItem key="login" href="/login">
+                  Login
+                </DropdownItem>
+                <DropdownItem key="register" href="/register">
+                  SignUp
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </div>
         )}
       </NavbarContent>
     </Navbar>

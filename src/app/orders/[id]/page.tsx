@@ -7,31 +7,43 @@ import { ICartProduct } from "@/types/CartProduct";
 import Order from "@/types/Order";
 import { CartContext, calCartProductPrice } from "@/util/ContextProvider";
 import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 
 const OrderPage = () => {
   const { id } = useParams();
+  const searchParams = useSearchParams();
   const { clearCart } = useContext(CartContext);
   const [showMessage, setShowMessage] = useState(false);
   const [order, setOrder] = useState<Order | null>(null);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      if (window.location.href.includes("clear-cart=1")) {
-        setShowMessage(true);
-        clearCart();
+    if (typeof window !== "undefined" && id) {
+      const clearCartParam = searchParams.get("clear-cart");
+      
+      if (clearCartParam) {
+        if (clearCartParam === "1") {
+          setShowMessage(true);
+          setIsSuccess(true);
+          clearCart();
+        } else {
+          setShowMessage(true);
+          setIsSuccess(false);
+        }
       }
-    }
 
-    if (id) {
-      fetch(`/api/orders?_id=${id}`)
+      // Fetch order data
+      fetch(`/api/orders?_id=${id}${clearCartParam ? `&clear-cart=${clearCartParam}` : ''}`)
         .then((res) => res.json())
         .then((data) => {
           setOrder(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching order:", error);
         });
     }
-  }, [id]);
+  }, [id, searchParams]);
 
   let subtotal = 0;
   if (order?.cartProducts) {
@@ -40,18 +52,34 @@ const OrderPage = () => {
     });
   }
 
+  const getStatusMessage = () => {
+    if (isSuccess) {
+      return (
+        <div className="text-2xl font-semibold text-green-600 justify-center italic mb-6 flex gap-2 items-center">
+          <TickIcon className={"w-16"} />
+          Order Paid Successfully!
+        </div>
+      );
+    } else if (showMessage && !isSuccess) {
+      return (
+        <div className="text-2xl font-semibold text-red-600 justify-center italic mb-6 flex gap-2 items-center">
+          <TickIcon className={"w-16"} />
+          Payment Failed - Order Cancelled
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <section className="pt-10 pb-20 max-w-6xl mx-auto">
-      {showMessage && (
-        <div className="text-2xl font-semibold text-primary justify-center italic mb-6 flex gap-2 items-center">
-          <TickIcon className={"w-16"} />
-          Order Submitted
-        </div>
-      )}
+      {getStatusMessage()}
+      
       <Breadcrumbs size="lg">
         <BreadcrumbItem href="/orders">Orders</BreadcrumbItem>
         <BreadcrumbItem>ID {id}</BreadcrumbItem>
       </Breadcrumbs>
+      
       <div>
         {order && (
           <div className="grid grid-cols-5 mt-8 gap-12">
