@@ -45,6 +45,7 @@ const Header = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [previousNotificationsLength, setPreviousNotificationsLength] = useState(0);
   const loaderRef = useRef(null);
   const audioRef = useRef<HTMLAudioElement | null>(null); // Ref for audio element
 
@@ -58,6 +59,7 @@ const Header = () => {
       setIsLoading(true);
       const res = await fetch('/api/notification');
       const data = await res.json();
+      setPreviousNotificationsLength(notifications.length);
       setNotifications(data);
       if (data.length === 0 || pageNum >= 3) {
         setHasMore(false);
@@ -85,15 +87,15 @@ const Header = () => {
 
   // Play sound for admin when new notifications are received
   useEffect(() => {
-    if (profileData?.isAdmin && notifications.length > 0) {
-      // Play sound only if admin and new notifications exist
+    if (profileData?.isAdmin && notifications.length > previousNotificationsLength) {
+      // Play sound only if admin and new notifications exist (length increased)
       const audio = new Audio('/notification.mp3'); // Path to your audio file
       audio.play().catch((error) => {
         console.error("Error playing notification sound:", error);
       });
       audioRef.current = audio; // Store audio in ref
     }
-  }, [notifications, profileData]);
+  }, [notifications, profileData, previousNotificationsLength]);
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
@@ -171,7 +173,7 @@ const Header = () => {
               </Link>
             </nav>
           </div>
-        </>
+          </>
       )}
 
       {/* Desktop Navigation */}
@@ -204,15 +206,15 @@ const Header = () => {
       </NavbarContent>
 
       {/* User Profile and Notifications Section */}
-      <NavbarContent justify="end">
-        {notifications && (
-          <Dropdown className="text-gray-300 bg-dark rounded-lg">
+      <NavbarContent justify="end" className="gap-2">
+        {profileData && profileData.isAdmin && (
+          <Dropdown>
             <DropdownTrigger>
               <Button isIconOnly className="bg-transparent relative">
                 <BellIcon className="w-6 stroke-white" />
                 {notifications.length > 0 && (
-                  <span className="w-4 h-4 rounded-full bg-primary text-dark text-xs absolute right-0 top-0 flex items-center justify-center">
-                    {notifications.length}
+                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-dark text-xs flex items-center justify-center">
+                    {notifications.length > 99 ? '99+' : notifications.length}
                   </span>
                 )}
               </Button>
@@ -220,30 +222,30 @@ const Header = () => {
             <DropdownMenu
               aria-label="Notifications Menu"
               color="default"
-              className="max-h-[300px] overflow-y-auto w-64 p-2 bg-dark text-gray-300 rounded-lg"
+              className="max-h-[300px] overflow-y-auto w-80 p-2 bg-dark text-gray-300 rounded-lg"
             >
-              {notifications.map((notification) => (
-                <DropdownItem key={notification?._id} className="py-2 hover:bg-gray-700">
-                  <Link href={`/orders/${
-                      notification?.body.match(/#([a-f0-9]+)/)?.[1] ?? ""
-                    }`}>
-                    <div className="flex flex-col">
-                      <span>{notification?.title}</span>
-                      <span>{notification?.body}</span>
-                      <span className="text-xs text-gray-400">
-                        {new Date(notification?.createdAt).toLocaleString()}
-                      </span>
-                    </div>
-                  </Link>
+              {notifications.length === 0 ? (
+                <DropdownItem className="text-center text-gray-400 py-4">
+                  No notifications
                 </DropdownItem>
-              ))}
-              <DropdownItem
-                ref={loaderRef}
-                key="loader"
-                className="text-center text-gray-300"
-              >
-                <div>{isLoading ? "Loading..." : "Scroll to load more"}</div>
-              </DropdownItem>
+              ) : (
+                notifications.map((notification) => {
+                  const orderIdMatch = notification.body.match(/#([a-f0-9]+)/);
+                  return (
+                    <DropdownItem key={notification._id} className="py-2 hover:bg-gray-700">
+                      <Link href={`/orders/${orderIdMatch?.[1] ?? ""}`}>
+                        <div className="flex flex-col">
+                          <span className="font-semibold">{notification.title}</span>
+                          <span className="text-sm">{notification.body}</span>
+                          <span className="text-xs text-gray-400">
+                            {new Date(notification.createdAt).toLocaleString()}
+                          </span>
+                        </div>
+                      </Link>
+                    </DropdownItem>
+                  );
+                })
+              )}
             </DropdownMenu>
           </Dropdown>
         )}
