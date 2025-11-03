@@ -22,12 +22,14 @@ import {
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from 'next/navigation';
-import { useContext, useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { memo, useCallback, useContext, useEffect, useRef, useState } from "react";
 import mogameatlogo from "../../assets/Moga_Meats.png";
 import { CartContext } from "../../util/ContextProvider";
+import NotificationDropdown from "../common/NotificationDropdown";
 import { useProfile } from "../hooks/useProfile";
 
+// Define interfaces for type safety
 interface Notification {
   _id: string;
   title: string;
@@ -35,65 +37,92 @@ interface Notification {
   createdAt: string;
 }
 
+interface ProfileData {
+  _id?: string; // Added for type safety
+  isAdmin: boolean;
+  image?: string;
+}
+
+// Debounce utility function
+const debounce = (func: (...args: any[]) => void, wait: number) => {
+  let timeout: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+};
+
 const Header = () => {
   const { data: session } = useSession();
-  const { cartProducts } = useContext(CartContext);
+  const cartCtx = useContext(CartContext);
+  const cartProducts = cartCtx?.cartProducts ?? []; // Fallback for context
   const pathname = usePathname();
-  const { data: profileData } = useProfile();
+  const { data: profileData } = useProfile() as { data: ProfileData | null };
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const loaderRef = useRef(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null); // Ref for audio element
+  const loaderRef = useRef<HTMLDivElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!isSidebarOpen);
-  };
+  // Toggle sidebar
+  const toggleSidebar = useCallback(() => {
+    setSidebarOpen((prev) => !prev);
+  }, []);
 
-  // Function to fetch notifications
-  const fetchNotifications = async (pageNum = 1) => {
-    try {
-      setIsLoading(true);
-      const res = await fetch('/api/notification');
-      const data = await res.json();
-      setNotifications(data);
-      if (data.length === 0 || pageNum >= 3) {
-        setHasMore(false);
+  // Fetch notifications with debouncing
+  const fetchNotifications = useCallback(
+    debounce(async (pageNum: number) => {
+      if (!profileData || isLoading || !hasMore) return;
+
+      try {
+        setIsLoading(true);
+        const res = await fetch(`/api/notification?page=${pageNum}`);
+        if (!res.ok) throw new Error("Failed to fetch notifications");
+        const data: Notification[] = await res.json();
+
+        setNotifications((prev) => [...prev, ...data]);
+        if (data.length === 0 || pageNum >= 3) {
+          setHasMore(false);
+        }
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching notifications:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    }, 300),
+    [profileData, isLoading, hasMore]
+  );
 
   // Reset notifications when user changes
   useEffect(() => {
     setNotifications([]);
     setPage(1);
     setHasMore(true);
-  }, [profileData]);
+  }, [profileData?._id]);
 
   // Fetch notifications when page or profileData changes
   useEffect(() => {
-    if (profileData && hasMore && !isLoading) {
-      fetchNotifications(page);
-    }
-  }, [profileData, page]);
+    fetchNotifications(page);
+  }, [page, fetchNotifications]);
 
-  // Play sound for admin when new notifications are received
+  // Play notification sound for admin
   useEffect(() => {
-    if (profileData?.isAdmin && notifications.length > 0) {
-      // Play sound only if admin and new notifications exist
-      const audio = new Audio('/notification.mp3'); // Path to your audio file
+    if (profileData?.isAdmin && notifications.length > 0 && !audioRef.current) {
+      const audio = new Audio("/notification.mp3");
+      audioRef.current = audio;
       audio.play().catch((error) => {
         console.error("Error playing notification sound:", error);
       });
-      audioRef.current = audio; // Store audio in ref
     }
-  }, [notifications, profileData]);
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, [notifications, profileData?.isAdmin]);
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
@@ -119,14 +148,15 @@ const Header = () => {
   }, [hasMore, isLoading]);
 
   return (
-    <Navbar className="font-semibold bg-dark py-3 lg:px-8">
+    <Navbar className="font-semibold bg-dark py-3 lg:px-8" maxWidth="full">
       <NavbarBrand>
-        <Link href="/">
+        <Link href="/" aria-label="Moga Meat Bar & Grill Home">
           <Image
             src={mogameatlogo}
             alt="Moga Meat Bar & Grill Logo"
             width={100}
             height={60}
+            priority
             className="block md:inline"
           />
         </Link>
@@ -134,7 +164,12 @@ const Header = () => {
 
       {/* Mobile Sidebar Toggle */}
       <NavbarContent className="lg:hidden" justify="start">
-        <Button isIconOnly className="bg-transparent" onClick={toggleSidebar}>
+        <Button
+          isIconOnly
+          className="bg-transparent"
+          onClick={toggleSidebar}
+          aria-label="Toggle navigation menu"
+        >
           <MenuIcon className="w-6 stroke-white" />
         </Button>
       </NavbarContent>
@@ -143,32 +178,36 @@ const Header = () => {
       {isSidebarOpen && (
         <>
           <div
-            className="fixed inset-0 bg-black z-40"
+            className="fixed inset-0 bg-black/50 z-40"
             onClick={toggleSidebar}
-          ></div>
-          <div className="fixed top-0 left-0 bg-black z-50 pt-12 pb-12 pl-12 pr-44 shadow-lg">
+            aria-hidden="true"
+          />
+          <div className="fixed top-0 left-0 bg-dark z-50 pt-12 pb-12 pl-12 pr-44 shadow-lg">
             <button
               className="absolute top-4 right-4 text-white"
               onClick={toggleSidebar}
+              aria-label="Close sidebar"
             >
               ✖
             </button>
             <nav className="flex flex-col space-y-4 mt-8">
-              <Link href="/" className="hover:text-primary">
-                Home
-              </Link>
-              <Link href="/menu" className="hover:text-primary">
-                Menu
-              </Link>
-              <Link href="/services" className="hover:text-primary">
-                Services
-              </Link>
-              <Link href="/about" className="hover:text-primary">
-                About
-              </Link>
-              <Link href="/contact" className="hover:text-primary">
-                Contact
-              </Link>
+              {[
+                { href: "/", label: "Home" },
+                { href: "/menu", label: "Menu" },
+                { href: "/services", label: "Services" },
+                { href: "/about", label: "About" },
+                { href: "/contact", label: "Contact" },
+              ].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="hover:text-primary"
+                  onClick={toggleSidebar}
+                  aria-current={pathname === item.href ? "page" : undefined}
+                >
+                  {item.label}
+                </Link>
+              ))}
             </nav>
           </div>
         </>
@@ -176,198 +215,150 @@ const Header = () => {
 
       {/* Desktop Navigation */}
       <NavbarContent className="hidden lg:flex gap-8" justify="center">
-        <NavbarItem isActive={pathname === "/"}>
-          <Link href="/" aria-current="page" className="hover:text-primary">
-            Home
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive={pathname === "/menu"}>
-          <Link href="/menu" className="hover:text-primary">
-            Menu
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive={pathname === "/services"}>
-          <Link href="/services" className="hover:text-primary">
-            Services
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive={pathname === "/about"}>
-          <Link href="/about" className="hover:text-primary">
-            About
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive={pathname === "/contact"}>
-          <Link href="/contact" className="hover:text-primary">
-            Contact
-          </Link>
-        </NavbarItem>
+        {[
+          { href: "/", label: "Home" },
+          { href: "/menu", label: "Menu" },
+          { href: "/services", label: "Services" },
+          { href: "/about", label: "About" },
+          { href: "/contact", label: "Contact" },
+        ].map((item) => (
+          <NavbarItem key={item.href} isActive={pathname === item.href}>
+            <Link
+              href={item.href}
+              className="hover:text-primary"
+              aria-current={pathname === item.href ? "page" : undefined}
+            >
+              {item.label}
+            </Link>
+          </NavbarItem>
+        ))}
       </NavbarContent>
 
       {/* User Profile and Notifications Section */}
       <NavbarContent justify="end">
-        {notifications && (
-          <Dropdown className="text-gray-300 bg-dark rounded-lg">
-            <DropdownTrigger>
-              <Button isIconOnly className="bg-transparent relative">
-                <BellIcon className="w-6 stroke-white" />
-                {notifications.length > 0 && (
-                  <span className="w-4 h-4 rounded-full bg-primary text-dark text-xs absolute right-0 top-0 flex items-center justify-center">
-                    {notifications.length}
-                  </span>
-                )}
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu
-              aria-label="Notifications Menu"
-              color="default"
-              className="max-h-[300px] overflow-y-auto w-64 p-2 bg-dark text-gray-300 rounded-lg"
+        <Dropdown className="text-gray-300 bg-dark rounded-lg">
+          <DropdownTrigger>
+            <Button isIconOnly className="bg-transparent relative" aria-label="Notifications">
+              <BellIcon className="w-6 stroke-white" />
+              {notifications.length > 0 && (
+                <span className="w-4 h-4 rounded-full bg-primary text-dark text-xs absolute right-0 top-0 flex items-center justify-center">
+                  {notifications.length}
+                </span>
+              )}
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu
+            aria-label="Notifications Menu"
+            className="max-h-[300px] overflow-y-auto w-64 p-2 bg-dark text-gray-300 rounded-lg"
+            variant="flat"
+          >
+            <NotificationDropdown notifications={notifications} />
+            <DropdownItem
+              key="loader"
+              className="text-center text-gray-400 text-sm"
+              isDisabled
             >
-              {notifications.map((notification) => (
-                <DropdownItem key={notification?._id} className="py-2 hover:bg-gray-700">
-                  <Link href={`/orders/${
-                      notification?.body.match(/#([a-f0-9]+)/)?.[1] ?? ""
-                    }`}>
-                    <div className="flex flex-col">
-                      <span>{notification?.title}</span>
-                      <span>{notification?.body}</span>
-                      <span className="text-xs text-gray-400">
-                        {new Date(notification?.createdAt).toLocaleString()}
-                      </span>
+              {isLoading
+                ? "Loading..."
+                : hasMore
+                  ? "Scroll to load more"
+                  : "No more notifications"
+              }
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+
+        {profileData ? (
+          <Dropdown className="text-gray-300">
+            <DropdownTrigger>
+              <Button
+                className="bg-transparent h-full"
+                startContent={
+                  <Avatar
+                    src={profileData.image || ""}
+                    isBordered
+                    color="primary"
+                    size="sm"
+                    alt="User profile image"
+                  />
+                }
+                endContent={<ChevronDownIcon className="w-4 stroke-white" />}
+                disableAnimation
+                aria-label="User menu"
+              />
+            </DropdownTrigger>
+            <DropdownMenu aria-label="User Menu" color="primary">
+              {[
+                { key: "profile", href: "/profile", label: "My Profile", icon: <UserIcon className="w-6" /> },
+                { key: "orders", href: "/orders", label: "Orders", icon: <ShoppingBagIcon className="w-6" /> },
+                ...(profileData.isAdmin
+                  ? [
+                    { key: "categories", href: "/categories", label: "Categories", icon: <TagIcon className="w-6" /> },
+                    { key: "rawmeatcategories", href: "/rawmeatcategories", label: "Raw Categories", icon: <TagIcon className="w-6" /> },
+                    { key: "menu-items", href: "/menu-items", label: "Menu Items", icon: <MenuIcon className="w-6" /> },
+                    { key: "menu-raw-items", href: "/menu-raw-items", label: "Raw Meat Menu Items", icon: <MenuIcon className="w-6" /> },
+                    { key: "users", href: "/users", label: "Users", icon: <UsersIcon className="w-6" /> },
+                  ]
+                  : []),
+                {
+                  key: "carts",
+                  href: "/cart",
+                  label: (
+                    <div className="relative">
+                      Cart
+                      {cartProducts.length > 0 && (
+                        <span className="w-4 h-4 rounded-full bg-primary text-dark text-xs absolute right-[-20px] top-0 flex items-center justify-center">
+                          {cartProducts.length}
+                        </span>
+                      )}
                     </div>
-                  </Link>
+                  ),
+                  icon: <ShoppingBagIcon className="w-6" />, // Changed to ShoppingBagIcon for consistency
+                },
+                {
+                  key: "signOut",
+                  href: "#",
+                  label: "Sign Out",
+                  icon: <SignOutIcon className="w-6" />,
+                  onClick: () => signOut({ callbackUrl: "/" }),
+                },
+              ].map((item) => (
+                <DropdownItem
+                  key={item.key}
+                  href={item.href}
+                  startContent={item.icon}
+                  onClick={item.onClick}
+                  className={item.key === "signOut" ? "text-danger" : ""}
+                >
+                  {item.label}
                 </DropdownItem>
               ))}
-              <DropdownItem
-                ref={loaderRef}
-                key="loader"
-                className="text-center text-gray-300"
-              >
-                <div>{isLoading ? "Loading..." : "Scroll to load more"}</div>
+            </DropdownMenu>
+          </Dropdown>
+        ) : (
+          <Dropdown className="text-gray-300">
+            <DropdownTrigger>
+              <Button
+                className="bg-transparent h-full"
+                startContent={<UsersIcon className="w-6" />}
+                endContent={<ChevronDownIcon className="w-4 stroke-white" />}
+                disableAnimation
+                aria-label="Guest menu"
+              />
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Guest Menu" color="primary">
+              <DropdownItem key="login" href="/login">
+                Login
+              </DropdownItem>
+              <DropdownItem key="register" href="/register">
+                SignUp
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
-        )}
-
-        {profileData ? (
-          <div className="flex items-center">
-            <Dropdown className="text-gray-300">
-              <DropdownTrigger>
-                <Button
-                  className="bg-transparent h-full"
-                  startContent={
-                    <Avatar
-                      src={profileData?.image || ""}
-                      isBordered
-                      color="primary"
-                      size="sm"
-                    />
-                  }
-                  endContent={<ChevronDownIcon className="w-4 stroke-white" />}
-                  disableAnimation
-                />
-              </DropdownTrigger>
-              <DropdownMenu aria-label="User Menu" color="primary">
-                <DropdownItem
-                  key="profile"
-                  href="/profile"
-                  startContent={<UserIcon className="w-6" />}
-                >
-                  My Profile
-                </DropdownItem>
-                <DropdownItem
-                  key="orders"
-                  href="/orders"
-                  startContent={<ShoppingBagIcon className="w-6" />}
-                >
-                  Orders
-                </DropdownItem>
-                <DropdownItem
-                  className={profileData.isAdmin ? "" : "hidden"}
-                  key="categories"
-                  href="/categories"
-                  startContent={<TagIcon className="w-6" />}
-                >
-                  Categories
-                </DropdownItem>
-                <DropdownItem
-                  className={profileData.isAdmin ? "" : "hidden"}
-                  key="rawmeatcategories"
-                  href="/rawmeatcategories"
-                  startContent={<TagIcon className="w-6" />}
-                >
-                  Raw Categories
-                </DropdownItem>
-                <DropdownItem
-                  className={profileData.isAdmin ? "" : "hidden"}
-                  key="menu-items"
-                  href="/menu-items"
-                  startContent={<MenuIcon className="w-6" />}
-                >
-                  Menu Items
-                </DropdownItem>
-                <DropdownItem
-                  className={profileData.isAdmin ? "" : "hidden"}
-                  key="menu-raw-items"
-                  href="/menu-raw-items"
-                  startContent={<MenuIcon className="w-6" />}
-                >
-                  Raw Meat Menu Items
-                </DropdownItem>
-                <DropdownItem
-                  className={profileData.isAdmin ? "" : "hidden"}
-                  key="users"
-                  href="/users"
-                  startContent={<UsersIcon className="w-6" />}
-                >
-                  Users
-                </DropdownItem>
-                <DropdownItem
-                  key="carts"
-                  href="/cart"
-                  startContent={<UsersIcon className="w-6" />}
-                >
-                  Carts{" "}
-                  {cartProducts.length > 0 && (
-                    <span className="w-4 h-4 rounded-full bg-primary text-dark text-xs absolute right-1 top-0">
-                      {cartProducts.length}
-                    </span>
-                  )}
-                </DropdownItem>
-                <DropdownItem
-                  key="signOut"
-                  startContent={<SignOutIcon className="w-6" />}
-                  onClick={() => signOut({ callbackUrl: "/" })}
-                >
-                  Sign Out
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-        ) : (
-          <div className="flex items-center">
-            <Dropdown className="text-gray-300">
-              <DropdownTrigger>
-                <Button
-                  className="bg-transparent h-full"
-                  startContent={<UsersIcon className="w-6" />}
-                  endContent={<ChevronDownIcon className="w-4 stroke-white" />}
-                  disableAnimation
-                />
-              </DropdownTrigger>
-              <DropdownMenu aria-label="User Menu" color="primary">
-                <DropdownItem key="login" href="/login">
-                  Login
-                </DropdownItem>
-                <DropdownItem key="register" href="/register">
-                  SignUp
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
         )}
       </NavbarContent>
     </Navbar>
   );
 };
 
-export default Header;
+export default memo(Header);
