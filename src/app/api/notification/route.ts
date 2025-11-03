@@ -12,8 +12,8 @@ export async function GET(req: NextRequest) {
   if (!userEmail) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  let notifications;
-       notifications = await Notification.find();
+ let notifications;
+notifications = await Notification.find().sort({ createdAt: -1 });
   
 
   return NextResponse.json(notifications);

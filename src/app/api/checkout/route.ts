@@ -1,6 +1,7 @@
 import { MenuItem } from "@/app/models/MenuItem";
 import { Notification } from "@/app/models/Notification";
 import { Order } from "@/app/models/Order";
+import { User } from "@/app/models/User";
 import MenuItemAddOn from "@/types/MenuItemAddOn";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
@@ -11,13 +12,14 @@ import { authOptions } from "../auth/[...nextauth]/route";
 
 require("dotenv").config();
 
-// const stripe = require('stripe')(STRIPE_SECRET_KEY);
-const stripe = require('stripe')('process.env.STRIPE_SECRET_KEY');
+// const stripe = require('stripe')('');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req: NextRequest) {
   await mongoose.connect(
     "mongodb://siteAdmin:admin123Db@52.200.4.201:27017/mogameat?authSource=admin"
   );
+  
 
   const authSession = await getServerSession(authOptions);
   const userEmail = authSession?.user?.email;
@@ -35,6 +37,19 @@ export async function POST(req: NextRequest) {
       userEmail,
       title: "Order Created!",
       body: `Your order #${order._id.toString()} has been successfully created.`,
+      icon: "/images/mogameat-logo.png",
+      createdAt: new Date(),
+      read: false,
+    });
+  }
+
+  // Notify all admins about the new order
+  const admins = await User.find({ isAdmin: true });
+  for (const admin of admins) {
+    await Notification.create({
+      userEmail: admin.email,
+      title: "New Order Received!",
+      body: `A new order #${order._id.toString()} has been placed.`,
       icon: "/images/mogameat-logo.png",
       createdAt: new Date(),
       read: false,
