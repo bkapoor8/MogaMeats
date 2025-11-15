@@ -1,7 +1,7 @@
 import { RawMeatCategory } from "@/app/models/RawMeatCategory";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
-import { isAdmin } from "../auth/[...nextauth]/route";
+import { isAdmin } from "../auth/utils";
 
 export async function POST(req: NextRequest) {
   try {

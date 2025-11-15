@@ -8,7 +8,7 @@ import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 // import { STRIPE_SECRET_KEY } from "../../../util/constant";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "../auth/config";
 
 require("dotenv").config();
 

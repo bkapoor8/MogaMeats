@@ -23,8 +23,8 @@ const Footer = () => {
           <div>
             <h4 className="uppercase text-sm sm:text-base font-semibold mb-4">About Us</h4>
             <p className="text-sm text-gray-400">
-              At Moga Meat Bar and Grill, we don't just serve food—we share
-              a piece of India's rich culinary heritage. Come and experience
+              At Moga Meat Bar and Grill, we don&apos;t just serve food—we share
+              a piece of India&apos;s rich culinary heritage. Come and experience
               the difference today!
             </p>
           </div>
